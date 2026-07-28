@@ -1,0 +1,746 @@
+/* ===== CSS Variables / Design Tokens ===== */
+:root {
+  --bg: #1a1a2e;
+  --surface: #16213e;
+  --surface-hover: #1f3060;
+  --surface-active: #253865;
+  --text: #e0e0e0;
+  --text-secondary: #a0a0b0;
+  --text-muted: #6a6a7a;
+  --accent: #e94560;
+  --accent-hover: #f0627a;
+  --border: #2a2a4a;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+
+  /* Phase colors */
+  --color-prepare: #2980B9;
+  --color-work: #E74C3C;
+  --color-rest: #27AE60;
+}
+
+/* ===== Reset & Base ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Utility ===== */
+.hidden { display: none !important; }
+
+/* ===== Headers ===== */
+.config-header {
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+}
+
+.config-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+/* ===== Panel ===== */
+.panel {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+}
+
+.panel h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.25rem;
+}
+
+/* ===== Config Main ===== */
+.config-main {
+  flex: 1;
+  padding: 0 1rem 2rem;
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ===== Config Rows ===== */
+.config-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.config-row:last-of-type {
+  border-bottom: none;
+}
+
+.config-row label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* ===== Stepper ===== */
+.stepper, .time-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stepper-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.stepper-btn:hover {
+  background: var(--surface-hover);
+  border-color: var(--text-muted);
+}
+
+.stepper-btn:active {
+  background: var(--surface-active);
+}
+
+.stepper-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 2.5ch;
+  text-align: center;
+}
+
+/* ===== Time Display ===== */
+.time-display {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.time-display:hover {
+  border-color: var(--border);
+}
+
+.time-display.editing {
+  border-color: var(--accent);
+  background: var(--surface-active);
+}
+
+.time-min, .time-sec {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 2.5ch;
+  text-align: center;
+}
+
+.time-sep {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+/* Time edit input */
+.time-edit-input {
+  width: 3ch;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  outline: none;
+  padding: 0;
+  -moz-appearance: textfield;
+}
+
+.time-edit-input::-webkit-outer-spin-button,
+.time-edit-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ===== Quickstart Actions ===== */
+.quickstart-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  padding: 0.625rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  font-family: inherit;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background: var(--surface-hover);
+}
+
+.btn-large {
+  flex: 1;
+  padding: 0.875rem 2rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+}
+
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 300;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-icon:hover {
+  background: var(--surface-hover);
+  border-color: var(--text-muted);
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn-danger:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ===== Routines Section ===== */
+.routines-section {
+  margin-top: 0;
+}
+
+.routines-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.routines-header h2 {
+  margin-bottom: 0;
+}
+
+.routines-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.routines-empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* ===== Routine Card ===== */
+.routine-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.routine-card:hover {
+  border-color: var(--text-muted);
+}
+
+.routine-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.routine-card-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.routine-card-duration {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.routine-card-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.routine-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 100px;
+  background: var(--surface-hover);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.routine-tag.sets {
+  background: var(--accent);
+  color: #fff;
+}
+
+.routine-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.routine-card-actions .btn {
+  flex: 1;
+  text-align: center;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+/* ===== Timer View ===== */
+#timer-view {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
+
+#timer-view.hidden {
+  display: none;
+}
+
+.timer-bg {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-prepare);
+  transition: background-color 0.8s ease;
+}
+
+.timer-bg.phase-prepare { background: var(--color-prepare); }
+.timer-bg.phase-work { background: var(--color-work); }
+.timer-bg.phase-rest { background: var(--color-rest); }
+.timer-bg.phase-paused { filter: brightness(0.6); }
+.timer-bg.phase-finished { background: var(--surface); }
+
+.timer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* ===== Phase Label ===== */
+.phase-label {
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Countdown Container & Progress Ring ===== */
+.countdown-container {
+  position: relative;
+  width: min(280px, 65vw);
+  height: min(280px, 65vw);
+}
+
+.progress-ring {
+  width: 100%;
+  height: 100%;
+  transform: scale(-1, 1) rotate(-90deg);
+}
+
+.progress-ring-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 8;
+}
+
+.progress-ring-fill {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 565.49;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.95s linear, stroke 0.3s;
+}
+
+.countdown-digits {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  font-size: clamp(3.5rem, 12vw, 6rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== Set Counter ===== */
+.set-counter {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== Timer Controls ===== */
+.timer-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 0.75rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.ctrl-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.ctrl-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.ctrl-btn:active {
+  transform: scale(0.93);
+}
+
+.ctrl-btn-play {
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.ctrl-btn-exit {
+  width: auto;
+  padding: 0 1.25rem;
+  border-radius: 26px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  font-family: inherit;
+}
+
+/* ===== Lock Overlay ===== */
+.lock-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: transparent;
+}
+
+.lock-overlay.hidden {
+  display: none;
+}
+
+/* Disable all controls except lock when locked */
+.timer-controls.locked .ctrl-btn:not(#btn-lock) {
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+/* ===== Modal ===== */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  box-shadow: var(--shadow);
+}
+
+.modal-content h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  color: var(--text);
+}
+
+.modal-field {
+  margin-bottom: 1rem;
+}
+
+.modal-field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+}
+
+.modal-field .stepper,
+.modal-field .time-stepper {
+  justify-content: flex-start;
+}
+
+.text-input {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.text-input:focus {
+  border-color: var(--accent);
+}
+
+.text-input::placeholder {
+  color: var(--text-muted);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.modal-actions .btn {
+  flex: 1;
+  text-align: center;
+}
+
+/* ===== Validation Message ===== */
+.validation-msg {
+  color: var(--accent);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+/* ===== Responsive ===== */
+@media (min-width: 768px) {
+  .config-main {
+    padding: 0 2rem 2rem;
+  }
+
+  .routines-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+
+  .countdown-container {
+    width: 320px;
+    height: 320px;
+  }
+
+  .timer-controls {
+    gap: 1rem;
+    padding: 1.25rem 2rem;
+    padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width: 1024px) {
+  .config-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    max-width: 960px;
+    align-items: start;
+  }
+
+  .config-main .panel {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 380px) {
+  .config-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .stepper, .time-stepper {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .timer-controls {
+    gap: 0.35rem;
+    padding: 0.75rem 0.5rem;
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .ctrl-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .ctrl-btn-play {
+    width: 54px;
+    height: 54px;
+  }
+
+  .countdown-digits {
+    font-size: clamp(2.5rem, 14vw, 4rem);
+  }
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.routine-card {
+  animation: fadeIn 0.25s ease both;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.phase-label.flash {
+  animation: pulse 0.3s ease 3;
+}
