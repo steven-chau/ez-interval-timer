@@ -411,6 +411,9 @@ window.TimerApp = window.TimerApp || {};
     configView.classList.remove('hidden');
     updateConfigDisplay();
     renderRoutines();
+    if (exports.Confetti) exports.Confetti.stop();
+    var gif = document.getElementById('finish-gif');
+    if (gif) gif.classList.remove('pop');
   }
 
   function updateTimerDisplay() {
@@ -891,6 +894,9 @@ window.TimerApp = window.TimerApp || {};
     stateModule.on('finish', function() {
       exports.Timer.stop();
       updateTimerDisplay();
+      exports.Confetti.fire();
+      var gif = document.getElementById('finish-gif');
+      if (gif) gif.classList.add('pop');
     });
   }
 

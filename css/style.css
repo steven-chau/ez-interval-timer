@@ -800,6 +800,11 @@ body {
     height: 320px;
   }
 
+  .finish-gif {
+    width: 320px;
+    height: 320px;
+  }
+
   .timer-controls {
     gap: 1rem;
     padding: 1.25rem 2rem;
@@ -852,6 +857,30 @@ body {
   .countdown-digits {
     font-size: clamp(2.5rem, 14vw, 4rem);
   }
+}
+
+/* ===== Finish GIF ===== */
+.finish-gif {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(280px, 65vw);
+  height: min(280px, 65vw);
+  z-index: 50;
+  pointer-events: none;
+  display: none;
+  transform: translate(-50%, -50%);
+}
+
+.finish-gif.pop {
+  display: block;
+  animation: popIn 2s ease-out forwards;
+}
+
+@keyframes popIn {
+  0%   { transform: translate(-50%, -50%) scale(0.005); opacity: 0; }
+  8%   { opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
 }
 
 /* ===== Animations ===== */
