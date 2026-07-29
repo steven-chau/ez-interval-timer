@@ -10,6 +10,7 @@ window.TimerApp = window.TimerApp || {};
   var btnExit, lockOverlay, timerControls;
   var routinesGrid, routinesEmpty;
   var routineModal, modalTitle, btnModalCancel, btnModalSave;
+  var btnMenu, menuBackdrop, menuDrawer, btnMenuClose, btnAddToHomescreen;
   var setsDisplay;
   var workMinDisplay, workSecDisplay;
   var restMinDisplay, restSecDisplay;
@@ -38,6 +39,7 @@ window.TimerApp = window.TimerApp || {};
     cacheDom();
     loadLastConfig();
     renderRoutines();
+    setupMenu();
     bindEvents();
   }
 
@@ -83,6 +85,12 @@ window.TimerApp = window.TimerApp || {};
 
     btnModalCancel = document.getElementById('btn-modal-cancel');
     btnModalSave = document.getElementById('btn-modal-save');
+
+    btnMenu = document.getElementById('btn-menu');
+    menuBackdrop = document.getElementById('menu-backdrop');
+    menuDrawer = document.getElementById('menu-drawer');
+    btnMenuClose = document.getElementById('btn-menu-close');
+    btnAddToHomescreen = document.getElementById('btn-add-to-homescreen');
   }
 
   // ===== Config Helpers =====
@@ -726,6 +734,15 @@ window.TimerApp = window.TimerApp || {};
       }
     });
 
+    // --- Menu ---
+    btnMenu.addEventListener('click', openMenu);
+    btnMenuClose.addEventListener('click', closeMenu);
+    menuBackdrop.addEventListener('click', closeMenu);
+    btnAddToHomescreen.addEventListener('click', function() {
+      closeMenu();
+      showInstallHelp();
+    });
+
     // --- Wake Lock ---
     exports.State.on('start', function() {
       requestWakeLock();
@@ -779,6 +796,42 @@ window.TimerApp = window.TimerApp || {};
       wakeLock.release().catch(function() {});
       wakeLock = null;
     }
+  }
+
+  // ===== Menu =====
+  function setupMenu() {
+    // Hide hamburger if already in standalone mode
+    if (window.matchMedia('(display-mode: standalone)').matches
+        || navigator.standalone) {
+      btnMenu.classList.add('hidden');
+    }
+  }
+
+  function openMenu() {
+    menuDrawer.classList.remove('closed');
+    menuBackdrop.classList.remove('closed');
+  }
+
+  function closeMenu() {
+    menuDrawer.classList.add('closed');
+    menuBackdrop.classList.add('closed');
+  }
+
+  function showInstallHelp() {
+    var ua = navigator.userAgent || '';
+    var isIOS = /iPhone|iPad|iPod/.test(ua);
+    var isAndroid = /Android/.test(ua);
+    var msg;
+
+    if (isIOS) {
+      msg = 'Tap the Share button then "Add to Home Screen"';
+    } else if (isAndroid) {
+      msg = 'Tap \u22EE \u2192 "Add to Home Screen" in your browser menu';
+    } else {
+      msg = 'Bookmark this page (Ctrl+D) for quick access';
+    }
+
+    alert(msg);
   }
 
   // ===== Helpers =====
