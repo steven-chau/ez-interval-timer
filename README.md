@@ -1,14 +1,13 @@
 <div align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-dark.png">
-    <img alt="EZ Interval Timer - free online workout timer with work/rest intervals" src="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-light.png">
+    <img alt="EZ Interval Timer — free online workout timer with work/rest intervals" src="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-light.png">
   </picture>
 </div>
 
-
 # EZ Interval Timer — Free Online Workout & HIIT Timer
 
-**A free, no-install interval timer for workouts, HIIT, Tabata, circuit training, stretching, yoga, and any timed routine.** Runs in your browser. No sign-up, no ads, no app store.
+**A free, no-install interval timer for workouts, HIIT, Tabata, circuit training, stretching, yoga, and any timed routine.** Runs in your browser. No sign-up, no ads, no app store. Now with workout history tracking, calendar heatmaps, and support for 5 languages.
 
 [![License](https://img.shields.io/github/license/steven-chau/ez-interval-timer)](LICENSE)
 
@@ -30,8 +29,11 @@ Most workout timer apps are bloated with ads, require sign-ups, or lock features
 ### Quick Workout Setup
 Set your work time, rest time, number of sets, and a get-ready countdown — then hit Start. The default 30s work / 10s rest / 3 sets gets you going in seconds.
 
-### Save Custom Routines
-Create and name your own routines (e.g., "Morning Stretch", "Tabata 20/10", "Jaw Exercises"). Saved to your browser — they persist across sessions.
+### Save & Organise Routines
+Create and name your own routines (e.g., "Morning Stretch", "Tabata 20/10", "Push-ups"). Saved to your browser — they persist across sessions. **Drag and drop** to reorder your routines, or **clone** an existing routine with one click.
+
+### Multi-Language Support
+Switch between **5 languages** from the menu: English, 廣東話 (Cantonese), 台灣中文 (Taiwanese Mandarin), 简体中文 (Simplified Chinese), and 日本語 (Japanese). All UI text updates instantly. Voice announcements adapt to the selected language with locale-specific speech synthesis.
 
 ### Full-Screen Timer with Visual Cues
 - **Dynamic background colors** change per phase: blue for get-ready, red for work, green for rest
@@ -39,8 +41,17 @@ Create and name your own routines (e.g., "Morning Stretch", "Tabata 20/10", "Jaw
 - **Large countdown digits** — readable from across the room
 - **Set counter** tracks where you are in your routine
 
+### Celebration Effects
+When your workout finishes, a **confetti cannon** fires from the bottom corners with colourful particles and a **party-popper animation** scales up to congratulate you. Because finishing a workout should feel good.
+
+### Workout History & Activity Tracking
+Every completed workout is automatically saved with the routine name, date, time, and duration. View your history in two modes:
+
+- **Detailed View** — workouts grouped by day in reverse chronological order, with pagination
+- **Calendar Heatmap** — GitHub-style contribution graph showing your workout intensity by day. Deeper greens mean longer sessions.
+
 ### Audio & Voice Announcements
-- Text-to-speech announces each phase: "Get Ready", "Work", "Rest"
+- Locale-specific text-to-speech announces each phase in your chosen language
 - Countdown beeps for the final 3 seconds of each interval
 - Meditation-bowl gong tones during the work phase
 - Completion chime when your workout is done
@@ -73,6 +84,7 @@ Add it to your phone's home screen and use it like a native app. Includes a web 
 2. **Set your routine** — adjust work time, rest time, and number of sets
 3. **Hit Start** — the get-ready countdown begins, then your workout starts
 4. **Save routines** you like for quick access next time
+5. **Track your progress** in the Track Records view — see your workout history and calendar heatmap
 
 That's it. No account, no installation, no ads.
 
@@ -99,8 +111,8 @@ Built with vanilla web technologies. No build step, no `node_modules`, no framew
 
 - **HTML** — semantic, accessible markup
 - **CSS** — responsive dark theme with CSS custom properties, flexbox, and grid
-- **JavaScript** — modular state machine with Web Audio API and Speech Synthesis
-- **localStorage** — routines and preferences persisted client-side
+- **JavaScript** — modular state machine with Web Audio API, Speech Synthesis, Canvas confetti, and HTML5 Drag and Drop
+- **localStorage** — routines, workout records, language preference, and routine ordering persisted client-side
 
 ## Browser Support
 
@@ -112,6 +124,6 @@ MIT
 
 ---
 
-**[Open EZ Interval Timer →](https://steven-chau.github.io/ez-interval-timer)**
+**[Open EZ Interval Timer →](https://steven-chau.github.io/interval-timer)**
 
 *No ads. No sign-up. Just press Start.*

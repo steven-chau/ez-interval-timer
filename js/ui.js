@@ -4,7 +4,7 @@ window.TimerApp = window.TimerApp || {};
   'use strict';
 
   // ===== DOM references (cached on init) =====
-  var configView, timerView, timerBg, phaseLabel, countdownDigits;
+  var configView, timerView, timerBg, phaseLabel, countdownDigits, countdownContainer;
   var progressRing, setCounter, btnPlayPause, iconPause, iconPlay;
   var btnSkipBack, btnSkipFwd, btnLock, iconUnlocked, iconLocked;
   var btnExit, lockOverlay, timerControls;
@@ -56,6 +56,7 @@ window.TimerApp = window.TimerApp || {};
     timerBg = document.getElementById('timer-bg');
     phaseLabel = document.getElementById('phase-label');
     countdownDigits = document.getElementById('countdown-digits');
+    countdownContainer = document.querySelector('.countdown-container');
     progressRing = document.getElementById('progress-ring');
     setCounter = document.getElementById('set-counter');
     btnPlayPause = document.getElementById('btn-play-pause');
@@ -570,9 +571,8 @@ window.TimerApp = window.TimerApp || {};
         var rec = day.records[j];
         var time = new Date(rec.completedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         html += '<div class="records-item">';
-        html += '<span class="records-item-name">' + escapeHtml(rec.name) + '</span>';
+        html += '<span class="records-item-name">' + escapeHtml(rec.name) + ' (' + escapeHtml(formatDuration(rec.duration)) + ')</span>';
         html += '<span class="records-item-time">' + escapeHtml(time) + '</span>';
-        html += '<span class="records-item-duration">' + escapeHtml(formatDuration(rec.duration)) + '</span>';
         html += '</div>';
       }
       html += '</div>';
@@ -701,6 +701,9 @@ window.TimerApp = window.TimerApp || {};
     } else {
       countdownDigits.textContent = remaining;
     }
+
+    // Hide the circle during the finished phase (keep layout space)
+    countdownContainer.style.visibility = st.phase === 'finished' ? 'hidden' : '';
 
     // Progress ring
     if (st.phaseSecondsTotal > 0) {
@@ -1253,16 +1256,19 @@ window.TimerApp = window.TimerApp || {};
 
     stateModule.on('finish', function() {
       exports.Timer.stop();
+      // Capture circle position before we hide it
+      var circle = document.querySelector('.countdown-container');
+      var bg = document.getElementById('timer-bg');
+      var cr = circle.getBoundingClientRect();
+      var br = bg.getBoundingClientRect();
+      var cx = cr.left - br.left + cr.width / 2;
+      var cy = cr.top - br.top + cr.height / 2;
       updateTimerDisplay();
       exports.Confetti.fire();
       var gif = document.getElementById('finish-gif');
       if (gif) {
-        var circle = document.querySelector('.countdown-container');
-        var bg = document.getElementById('timer-bg');
-        var cr = circle.getBoundingClientRect();
-        var br = bg.getBoundingClientRect();
-        gif.style.left = (cr.left - br.left + cr.width / 2) + 'px';
-        gif.style.top = (cr.top - br.top + cr.height / 2) + 'px';
+        gif.style.left = cx + 'px';
+        gif.style.top = cy + 'px';
         gif.classList.add('pop');
       }
 
