@@ -304,7 +304,7 @@ window.TimerApp = window.TimerApp || {};
   // ===== Modal =====
   function openModal(routine) {
     editingRoutineId = routine ? routine.id : null;
-    modalTitle.textContent = exports.I18n.t(routine ? 'editRoutine' : 'newRoutine');
+    modalTitle.textContent = exports.I18n.t(routine && routine.id ? 'editRoutine' : 'newRoutine');
     document.getElementById('modal-name').value = routine ? routine.name : '';
 
     if (routine) {
@@ -411,9 +411,66 @@ window.TimerApp = window.TimerApp || {};
     }
   }
 
+  var draggedId = null;
+
+  function onDragStart(e) {
+    draggedId = this.dataset.id;
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  }
+
+  function onDragEnd(e) {
+    this.classList.remove('dragging');
+    var cards = routinesGrid.querySelectorAll('.routine-card');
+    for (var i = 0; i < cards.length; i++) {
+      cards[i].classList.remove('drag-over');
+    }
+    draggedId = null;
+  }
+
+  function onDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    var card = e.target.closest('.routine-card');
+    if (card && card.dataset.id !== draggedId) {
+      var cards = routinesGrid.querySelectorAll('.routine-card');
+      for (var i = 0; i < cards.length; i++) {
+        cards[i].classList.remove('drag-over');
+      }
+      card.classList.add('drag-over');
+    }
+  }
+
+  function onDrop(e) {
+    e.preventDefault();
+    var card = e.target.closest('.routine-card');
+    if (!card || card.dataset.id === draggedId) return;
+    card.classList.remove('drag-over');
+
+    var cards = routinesGrid.querySelectorAll('.routine-card');
+    var orderedIds = [];
+    var dropIdx = -1;
+    for (var i = 0; i < cards.length; i++) {
+      if (cards[i].dataset.id === card.dataset.id) dropIdx = i;
+    }
+    for (var j = 0; j < cards.length; j++) {
+      if (cards[j].dataset.id !== draggedId) {
+        orderedIds.push(cards[j].dataset.id);
+      }
+    }
+    orderedIds.splice(dropIdx, 0, draggedId);
+
+    exports.Storage.reorderRoutines(orderedIds);
+    renderRoutines();
+  }
+
   function createRoutineCard(routine) {
     var card = document.createElement('div');
     card.className = 'routine-card';
+    card.draggable = true;
+    card.dataset.id = routine.id;
+    card.addEventListener('dragstart', onDragStart);
+    card.addEventListener('dragend', onDragEnd);
     var t = exports.I18n.t;
 
     var totalSec = routine.prepareSeconds +
@@ -427,6 +484,13 @@ window.TimerApp = window.TimerApp || {};
     card.innerHTML =
       '<div class="routine-card-header">' +
         '<span class="routine-card-name">' + escapeHtml(routine.name) + '</span>' +
+        '<span class="routine-card-grip" aria-hidden="true">' +
+          '<svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor" opacity="0.35">' +
+            '<circle cx="3" cy="3" r="1.2"/><circle cx="9" cy="3" r="1.2"/>' +
+            '<circle cx="3" cy="8" r="1.2"/><circle cx="9" cy="8" r="1.2"/>' +
+            '<circle cx="3" cy="13" r="1.2"/><circle cx="9" cy="13" r="1.2"/>' +
+          '</svg>' +
+        '</span>' +
       '</div>' +
       '<div class="routine-card-duration">' + durationStr + '</div>' +
       '<div class="routine-card-tags">' +
@@ -436,7 +500,12 @@ window.TimerApp = window.TimerApp || {};
       '</div>' +
       '<div class="routine-card-actions">' +
         '<button class="btn btn-secondary routine-edit" data-id="' + routine.id + '">' + escapeHtml(t('edit')) + '</button>' +
-        '<button class="btn btn-danger routine-delete" data-id="' + routine.id + '">' + escapeHtml(t('delete')) + '</button>' +
+        '<button class="btn btn-icon-only btn-secondary routine-clone" data-id="' + routine.id + '" aria-label="' + escapeHtml(t('clone')) + '">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
+        '</button>' +
+        '<button class="btn btn-icon-only btn-danger routine-delete" data-id="' + routine.id + '" aria-label="' + escapeHtml(t('delete')) + '">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
+        '</button>' +
         '<button class="btn btn-primary routine-start" data-id="' + routine.id + '">' + escapeHtml(t('start')) + '</button>' +
       '</div>';
 
@@ -819,6 +888,9 @@ window.TimerApp = window.TimerApp || {};
     });
 
     // --- Routine card actions (delegation) ---
+    routinesGrid.addEventListener('dragover', onDragOver);
+    routinesGrid.addEventListener('drop', onDrop);
+
     routinesGrid.addEventListener('click', function(e) {
       var btn = e.target.closest('button');
       if (!btn) return;
@@ -829,6 +901,25 @@ window.TimerApp = window.TimerApp || {};
         var routines = exports.Storage.getRoutines();
         for (var i = 0; i < routines.length; i++) {
           if (routines[i].id === id) { openModal(routines[i]); break; }
+        }
+      } else if (btn.classList.contains('routine-clone')) {
+        var allRoutines = exports.Storage.getRoutines();
+        for (var k = 0; k < allRoutines.length; k++) {
+          if (allRoutines[k].id === id) {
+            var original = allRoutines[k];
+            openModal({
+              id: null,
+              name: original.name + ' (Copy)',
+              sets: original.sets,
+              workMinutes: original.workMinutes,
+              workSeconds: original.workSeconds,
+              restMinutes: original.restMinutes,
+              restSeconds: original.restSeconds,
+              prepareMinutes: original.prepareMinutes || 0,
+              prepareSeconds: original.prepareSeconds || 10
+            });
+            break;
+          }
         }
       } else if (btn.classList.contains('routine-delete')) {
         exports.Storage.deleteRoutine(id);

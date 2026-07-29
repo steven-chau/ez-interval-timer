@@ -461,8 +461,25 @@ body {
   transition: border-color 0.15s, background 0.15s;
 }
 
+.routine-card {
+  cursor: grab;
+}
+
+.routine-card:active {
+  cursor: grabbing;
+}
+
 .routine-card:hover {
   border-color: var(--text-muted);
+}
+
+.routine-card.dragging {
+  opacity: 0.4;
+}
+
+.routine-card.drag-over {
+  border-color: var(--accent);
+  background: var(--surface-hover);
 }
 
 .routine-card-header {
@@ -470,6 +487,13 @@ body {
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.5rem;
+}
+
+.routine-card-grip {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
 }
 
 .routine-card-name {
@@ -519,6 +543,13 @@ body {
   text-align: center;
   padding: 0.4rem 0.5rem;
   font-size: 0.8rem;
+}
+
+.routine-card-actions .btn-icon-only {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 32px;
+  padding: 0;
 }
 
 /* ===== Timer View ===== */
