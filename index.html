@@ -15,88 +15,101 @@
   <div id="app">
     <!-- ===== Config View ===== -->
     <div id="config-view" class="view">
-      <button id="btn-menu" class="btn-hamburger" aria-label="Menu">
+      <button id="btn-menu" class="btn-hamburger" data-i18n-aria="menuAria">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
 
       <div id="menu-backdrop" class="menu-backdrop closed"></div>
       <div id="menu-drawer" class="menu-drawer closed">
         <div class="menu-header">
-          <h2>Menu</h2>
-          <button id="btn-menu-close" class="btn-menu-close" aria-label="Close menu">&times;</button>
+          <h2 data-i18n="menu">Menu</h2>
+          <button id="btn-menu-close" class="btn-menu-close" data-i18n-aria="closeMenuAria">&times;</button>
         </div>
         <div class="menu-items">
-          <button id="btn-add-to-homescreen" class="menu-item">Add to Home Screen</button>
-          <a href="https://github.com/steven-chau/ez-interval-timer" target="_blank" rel="noopener" class="menu-item">GitHub Repo</a>
-          <a href="https://github.com/steven-chau/ez-interval-timer/issues" target="_blank" rel="noopener" class="menu-item">Contact</a>
+          <button id="btn-language" class="menu-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span data-i18n="language">Language</span>
+          </button>
+          <button id="btn-add-to-homescreen" class="menu-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span data-i18n="addToHomeScreen">Add to Home Screen</span>
+          </button>
+          <a href="https://github.com/steven-chau/ez-interval-timer" target="_blank" rel="noopener" class="menu-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            <span data-i18n="githubRepo">GitHub Repo</span>
+          </a>
+          <a href="https://github.com/steven-chau/ez-interval-timer/issues" target="_blank" rel="noopener" class="menu-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span data-i18n="contact">Contact</span>
+          </a>
         </div>
       </div>
 
       <header class="config-header">
-        <h1>EZ Interval Timer</h1>
+        <h1 data-i18n="appTitle">EZ Interval Timer</h1>
       </header>
 
       <main class="config-main">
         <!-- Quickstart Panel -->
         <section class="panel quickstart-panel">
-          <h2>Quickstart</h2>
+          <h2 data-i18n="quickstart">Quickstart</h2>
 
           <div class="config-row">
-            <label>Sets</label>
+            <label data-i18n="sets">Sets</label>
             <div class="stepper">
-              <button class="stepper-btn" data-action="decrement" data-target="sets" aria-label="Decrease sets">&#8722;</button>
+              <button class="stepper-btn" data-action="decrement" data-target="sets" data-i18n-aria="decreaseSets">&#8722;</button>
               <span class="stepper-value" id="sets-display">3</span>
-              <button class="stepper-btn" data-action="increment" data-target="sets" aria-label="Increase sets">+</button>
+              <button class="stepper-btn" data-action="increment" data-target="sets" data-i18n-aria="increaseSets">+</button>
             </div>
           </div>
 
           <div class="config-row">
-            <label>Work</label>
+            <label data-i18n="work">Work</label>
             <div class="time-stepper">
-              <button class="stepper-btn" data-action="decrement" data-target="work" aria-label="Decrease work time">&#8722;</button>
-              <div class="time-display" data-target="work" role="button" tabindex="0" aria-label="Work duration: 0 minutes 30 seconds">
+              <button class="stepper-btn" data-action="decrement" data-target="work" data-i18n-aria="decreaseWork">&#8722;</button>
+              <div class="time-display" data-target="work" role="button" tabindex="0">
                 <span class="time-min" id="work-min-display">0</span><span class="time-sep">:</span><span class="time-sec" id="work-sec-display">30</span>
               </div>
-              <button class="stepper-btn" data-action="increment" data-target="work" aria-label="Increase work time">+</button>
+              <button class="stepper-btn" data-action="increment" data-target="work" data-i18n-aria="increaseWork">+</button>
             </div>
           </div>
 
           <div class="config-row">
-            <label>Rest</label>
+            <label data-i18n="rest">Rest</label>
             <div class="time-stepper">
-              <button class="stepper-btn" data-action="decrement" data-target="rest" aria-label="Decrease rest time">&#8722;</button>
-              <div class="time-display" data-target="rest" role="button" tabindex="0" aria-label="Rest duration: 0 minutes 10 seconds">
+              <button class="stepper-btn" data-action="decrement" data-target="rest" data-i18n-aria="decreaseRest">&#8722;</button>
+              <div class="time-display" data-target="rest" role="button" tabindex="0">
                 <span class="time-min" id="rest-min-display">0</span><span class="time-sep">:</span><span class="time-sec" id="rest-sec-display">10</span>
               </div>
-              <button class="stepper-btn" data-action="increment" data-target="rest" aria-label="Increase rest time">+</button>
+              <button class="stepper-btn" data-action="increment" data-target="rest" data-i18n-aria="increaseRest">+</button>
             </div>
           </div>
 
           <div class="config-row">
-            <label>Get Ready</label>
+            <label data-i18n="getReady">Get Ready</label>
             <div class="time-stepper">
-              <button class="stepper-btn" data-action="decrement" data-target="prepare" aria-label="Decrease prepare time">&#8722;</button>
-              <div class="time-display" data-target="prepare" role="button" tabindex="0" aria-label="Get Ready duration: 0 minutes 10 seconds">
+              <button class="stepper-btn" data-action="decrement" data-target="prepare" data-i18n-aria="decreasePrepare">&#8722;</button>
+              <div class="time-display" data-target="prepare" role="button" tabindex="0">
                 <span class="time-min" id="prepare-min-display">0</span><span class="time-sep">:</span><span class="time-sec" id="prepare-sec-display">10</span>
               </div>
-              <button class="stepper-btn" data-action="increment" data-target="prepare" aria-label="Increase prepare time">+</button>
+              <button class="stepper-btn" data-action="increment" data-target="prepare" data-i18n-aria="increasePrepare">+</button>
             </div>
           </div>
 
           <div class="quickstart-actions">
-            <button id="btn-save-routine" class="btn btn-secondary">Save Routine</button>
-            <button id="btn-start" class="btn btn-primary btn-large">Start</button>
+            <button id="btn-save-routine" class="btn btn-secondary" data-i18n="saveRoutine">Save Routine</button>
+            <button id="btn-start" class="btn btn-primary btn-large" data-i18n="start">Start</button>
           </div>
         </section>
 
         <!-- Routines Section -->
         <section class="panel routines-section">
           <div class="routines-header">
-            <h2>Your Routines</h2>
-            <button id="btn-add-routine" class="btn btn-icon" aria-label="Add new routine">+</button>
+            <h2 data-i18n="yourRoutines">Your Routines</h2>
+            <button id="btn-add-routine" class="btn btn-icon" data-i18n-aria="addRoutineAria">+</button>
           </div>
           <div id="routines-grid" class="routines-grid"></div>
-          <p id="routines-empty" class="routines-empty hidden">No routines yet. Use the quickstart panel above to create one.</p>
+          <p id="routines-empty" class="routines-empty hidden" data-i18n="noRoutines">No routines yet. Use the quickstart panel above to create one.</p>
         </section>
       </main>
     </div>
@@ -122,21 +135,21 @@
       </div>
 
       <div class="timer-controls" id="timer-controls">
-        <button class="ctrl-btn" id="btn-skip-back" aria-label="Skip backward">
+        <button class="ctrl-btn" id="btn-skip-back" data-i18n-aria="skipBackAria">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
         </button>
-        <button class="ctrl-btn ctrl-btn-play" id="btn-play-pause" aria-label="Pause">
+        <button class="ctrl-btn ctrl-btn-play" id="btn-play-pause" data-i18n-aria="pauseAria">
           <svg id="icon-pause" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg>
           <svg id="icon-play" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" class="hidden"><polygon points="6,3 20,12 6,21"/></svg>
         </button>
-        <button class="ctrl-btn" id="btn-skip-fwd" aria-label="Skip forward">
+        <button class="ctrl-btn" id="btn-skip-fwd" data-i18n-aria="skipFwdAria">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
         </button>
-        <button class="ctrl-btn" id="btn-lock" aria-label="Lock screen">
+        <button class="ctrl-btn" id="btn-lock" data-i18n-aria="lockAria">
           <svg id="icon-unlocked" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
           <svg id="icon-locked" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </button>
-        <button class="ctrl-btn ctrl-btn-exit" id="btn-exit">Exit</button>
+        <button class="ctrl-btn ctrl-btn-exit" id="btn-exit" data-i18n="exit">Exit</button>
       </div>
 
     </div>
@@ -146,58 +159,83 @@
   <div id="routine-modal" class="modal hidden">
     <div class="modal-backdrop"></div>
     <div class="modal-content">
-      <h2 id="modal-title">New Routine</h2>
+      <h2 id="modal-title"></h2>
 
       <div class="modal-field">
-        <label for="modal-name">Name</label>
-        <input type="text" id="modal-name" maxlength="30" placeholder="Routine name" class="text-input">
+        <label for="modal-name" data-i18n="name">Name</label>
+        <input type="text" id="modal-name" maxlength="30" data-i18n-placeholder="routineName" class="text-input">
       </div>
 
       <div class="modal-field">
-        <label>Sets</label>
+        <label data-i18n="sets">Sets</label>
         <div class="stepper">
-          <button class="stepper-btn" data-action="decrement" data-target="modal-sets" aria-label="Decrease sets">&#8722;</button>
+          <button class="stepper-btn" data-action="decrement" data-target="modal-sets" data-i18n-aria="decreaseSets">&#8722;</button>
           <span class="stepper-value" id="modal-sets-display">3</span>
-          <button class="stepper-btn" data-action="increment" data-target="modal-sets" aria-label="Increase sets">+</button>
+          <button class="stepper-btn" data-action="increment" data-target="modal-sets" data-i18n-aria="increaseSets">+</button>
         </div>
       </div>
 
       <div class="modal-field">
-        <label>Work</label>
+        <label data-i18n="work">Work</label>
         <div class="time-stepper">
-          <button class="stepper-btn" data-action="decrement" data-target="modal-work" aria-label="Decrease work time">&#8722;</button>
+          <button class="stepper-btn" data-action="decrement" data-target="modal-work" data-i18n-aria="decreaseWork">&#8722;</button>
           <div class="time-display" data-target="modal-work" role="button" tabindex="0">
             <span class="time-min" id="modal-work-min-display">0</span><span class="time-sep">:</span><span class="time-sec" id="modal-work-sec-display">30</span>
           </div>
-          <button class="stepper-btn" data-action="increment" data-target="modal-work" aria-label="Increase work time">+</button>
+          <button class="stepper-btn" data-action="increment" data-target="modal-work" data-i18n-aria="increaseWork">+</button>
         </div>
       </div>
 
       <div class="modal-field">
-        <label>Rest</label>
+        <label data-i18n="rest">Rest</label>
         <div class="time-stepper">
-          <button class="stepper-btn" data-action="decrement" data-target="modal-rest" aria-label="Decrease rest time">&#8722;</button>
+          <button class="stepper-btn" data-action="decrement" data-target="modal-rest" data-i18n-aria="decreaseRest">&#8722;</button>
           <div class="time-display" data-target="modal-rest" role="button" tabindex="0">
             <span class="time-min" id="modal-rest-min-display">0</span><span class="time-sep">:</span><span class="time-sec" id="modal-rest-sec-display">10</span>
           </div>
-          <button class="stepper-btn" data-action="increment" data-target="modal-rest" aria-label="Increase rest time">+</button>
+          <button class="stepper-btn" data-action="increment" data-target="modal-rest" data-i18n-aria="increaseRest">+</button>
         </div>
       </div>
 
       <div class="modal-field">
-        <label>Get Ready</label>
+        <label data-i18n="getReady">Get Ready</label>
         <div class="time-stepper">
-          <button class="stepper-btn" data-action="decrement" data-target="modal-prepare" aria-label="Decrease prepare time">&#8722;</button>
+          <button class="stepper-btn" data-action="decrement" data-target="modal-prepare" data-i18n-aria="decreasePrepare">&#8722;</button>
           <div class="time-display" data-target="modal-prepare" role="button" tabindex="0">
             <span class="time-min" id="modal-prepare-min-display">0</span><span class="time-sep">:</span><span class="time-sec" id="modal-prepare-sec-display">10</span>
           </div>
-          <button class="stepper-btn" data-action="increment" data-target="modal-prepare" aria-label="Increase prepare time">+</button>
+          <button class="stepper-btn" data-action="increment" data-target="modal-prepare" data-i18n-aria="increasePrepare">+</button>
         </div>
       </div>
 
       <div class="modal-actions">
-        <button id="btn-modal-cancel" class="btn btn-secondary">Cancel</button>
-        <button id="btn-modal-save" class="btn btn-primary">Save</button>
+        <button id="btn-modal-cancel" class="btn btn-secondary" data-i18n="cancel">Cancel</button>
+        <button id="btn-modal-save" class="btn btn-primary" data-i18n="save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Language Selection Modal ===== -->
+  <div id="language-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h2 id="language-modal-title" data-i18n="selectLanguage">Language</h2>
+      <div class="language-options">
+        <button class="language-option" data-lang="en">
+          <span class="language-option-name" data-i18n="langEn">English</span>
+        </button>
+        <button class="language-option" data-lang="zh-HK">
+          <span class="language-option-name" data-i18n="langZhHK">廣東話</span>
+        </button>
+        <button class="language-option" data-lang="zh-TW">
+          <span class="language-option-name" data-i18n="langZhTW">台灣中文</span>
+        </button>
+        <button class="language-option" data-lang="zh-CN">
+          <span class="language-option-name" data-i18n="langZhCN">简体中文</span>
+        </button>
+        <button class="language-option" data-lang="ja">
+          <span class="language-option-name" data-i18n="langJa">日本語</span>
+        </button>
       </div>
     </div>
   </div>
@@ -206,6 +244,7 @@
   <script src="js/state.js"></script>
   <script src="js/timer.js"></script>
   <script src="js/audio.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/confetti.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/app.js"></script>

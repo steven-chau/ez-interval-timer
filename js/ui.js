@@ -37,6 +37,7 @@ window.TimerApp = window.TimerApp || {};
   // ===== Init =====
   function init() {
     cacheDom();
+    exports.I18n.updatePageLanguage();
     loadLastConfig();
     renderRoutines();
     setupMenu();
@@ -283,7 +284,7 @@ window.TimerApp = window.TimerApp || {};
   // ===== Modal =====
   function openModal(routine) {
     editingRoutineId = routine ? routine.id : null;
-    modalTitle.textContent = routine ? 'Edit Routine' : 'New Routine';
+    modalTitle.textContent = exports.I18n.t(routine ? 'editRoutine' : 'newRoutine');
     document.getElementById('modal-name').value = routine ? routine.name : '';
 
     if (routine) {
@@ -315,6 +316,28 @@ window.TimerApp = window.TimerApp || {};
   function closeModal() {
     routineModal.classList.add('hidden');
     editingRoutineId = null;
+  }
+
+  function openLanguageModal() {
+    updateLanguageModalActive();
+    document.getElementById('language-modal').classList.remove('hidden');
+  }
+
+  function closeLanguageModal() {
+    document.getElementById('language-modal').classList.add('hidden');
+  }
+
+  function updateLanguageModalActive() {
+    var current = exports.I18n.getLanguage();
+    var options = document.querySelectorAll('.language-option');
+    for (var i = 0; i < options.length; i++) {
+      var opt = options[i];
+      if (opt.getAttribute('data-lang') === current) {
+        opt.classList.add('active');
+      } else {
+        opt.classList.remove('active');
+      }
+    }
   }
 
   function updateModalDisplay() {
@@ -371,6 +394,7 @@ window.TimerApp = window.TimerApp || {};
   function createRoutineCard(routine) {
     var card = document.createElement('div');
     card.className = 'routine-card';
+    var t = exports.I18n.t;
 
     var totalSec = routine.prepareSeconds +
       (routine.sets * (routine.workMinutes * 60 + routine.workSeconds)) +
@@ -387,13 +411,13 @@ window.TimerApp = window.TimerApp || {};
       '<div class="routine-card-duration">' + durationStr + '</div>' +
       '<div class="routine-card-tags">' +
         '<span class="routine-tag sets">' + routine.sets + 'x</span>' +
-        '<span class="routine-tag">Work ' + formatDurationShort(workSec) + '</span>' +
-        (restSec > 0 ? '<span class="routine-tag">Rest ' + formatDurationShort(restSec) + '</span>' : '') +
+        '<span class="routine-tag">' + escapeHtml(t('work')) + ' ' + formatDurationShort(workSec) + '</span>' +
+        (restSec > 0 ? '<span class="routine-tag">' + escapeHtml(t('rest')) + ' ' + formatDurationShort(restSec) + '</span>' : '') +
       '</div>' +
       '<div class="routine-card-actions">' +
-        '<button class="btn btn-secondary routine-edit" data-id="' + routine.id + '">Edit</button>' +
-        '<button class="btn btn-danger routine-delete" data-id="' + routine.id + '">Delete</button>' +
-        '<button class="btn btn-primary routine-start" data-id="' + routine.id + '">Start</button>' +
+        '<button class="btn btn-secondary routine-edit" data-id="' + routine.id + '">' + escapeHtml(t('edit')) + '</button>' +
+        '<button class="btn btn-danger routine-delete" data-id="' + routine.id + '">' + escapeHtml(t('delete')) + '</button>' +
+        '<button class="btn btn-primary routine-start" data-id="' + routine.id + '">' + escapeHtml(t('start')) + '</button>' +
       '</div>';
 
     return card;
@@ -413,7 +437,11 @@ window.TimerApp = window.TimerApp || {};
     renderRoutines();
     if (exports.Confetti) exports.Confetti.stop();
     var gif = document.getElementById('finish-gif');
-    if (gif) gif.classList.remove('pop');
+    if (gif) {
+      gif.classList.remove('pop');
+      gif.style.left = '';
+      gif.style.top = '';
+    }
   }
 
   function updateTimerDisplay() {
@@ -448,38 +476,39 @@ window.TimerApp = window.TimerApp || {};
       : 'rgba(255,255,255,0.85)';
 
     // Set counter
+    var t = exports.I18n.t;
     if (st.phase === 'prepare') {
-      setCounter.textContent = 'Set 1 / ' + st.totalSets;
+      setCounter.textContent = t('setCounter', {current: '1', total: '' + st.totalSets});
     } else if (st.phase === 'finished') {
-      setCounter.textContent = 'Complete!';
+      setCounter.textContent = '';
     } else if (st.phase === 'paused') {
-      setCounter.textContent = 'Set ' + st.currentSet + ' / ' + st.totalSets + ' (Paused)';
+      setCounter.textContent = t('setCounterPaused', {current: '' + st.currentSet, total: '' + st.totalSets});
     } else {
-      setCounter.textContent = 'Set ' + st.currentSet + ' / ' + st.totalSets;
+      setCounter.textContent = t('setCounter', {current: '' + st.currentSet, total: '' + st.totalSets});
     }
 
     // Play/pause icon
     if (st.isPaused) {
       iconPause.classList.add('hidden');
       iconPlay.classList.remove('hidden');
-      btnPlayPause.setAttribute('aria-label', 'Resume');
+      btnPlayPause.setAttribute('aria-label', t('resumeAria'));
     } else {
       iconPause.classList.remove('hidden');
       iconPlay.classList.add('hidden');
-      btnPlayPause.setAttribute('aria-label', 'Pause');
+      btnPlayPause.setAttribute('aria-label', t('pauseAria'));
     }
 
     // Lock icon
     if (st.isLocked) {
       iconUnlocked.classList.add('hidden');
       iconLocked.classList.remove('hidden');
-      btnLock.setAttribute('aria-label', 'Unlock screen');
+      btnLock.setAttribute('aria-label', t('unlockAria'));
       lockOverlay.classList.remove('hidden');
       timerControls.classList.add('locked');
     } else {
       iconUnlocked.classList.remove('hidden');
       iconLocked.classList.add('hidden');
-      btnLock.setAttribute('aria-label', 'Lock screen');
+      btnLock.setAttribute('aria-label', t('lockAria'));
       lockOverlay.classList.add('hidden');
       timerControls.classList.remove('locked');
     }
@@ -491,11 +520,12 @@ window.TimerApp = window.TimerApp || {};
   }
 
   function getPhaseLabelText(st) {
-    if (st.phase === 'prepare') return 'Get Ready';
-    if (st.phase === 'work') return 'Work';
-    if (st.phase === 'rest') return 'Rest';
-    if (st.phase === 'paused') return 'Paused';
-    if (st.phase === 'finished') return 'Done!';
+    var t = exports.I18n.t;
+    if (st.phase === 'prepare') return t('phaseGetReady');
+    if (st.phase === 'work') return t('phaseWork');
+    if (st.phase === 'rest') return t('phaseRest');
+    if (st.phase === 'paused') return t('phasePaused');
+    if (st.phase === 'finished') return t('phaseDone');
     return '';
   }
 
@@ -746,6 +776,22 @@ window.TimerApp = window.TimerApp || {};
       showInstallHelp();
     });
 
+    // --- Language ---
+    document.getElementById('btn-language').addEventListener('click', function() {
+      closeMenu();
+      openLanguageModal();
+    });
+
+    var langModal = document.getElementById('language-modal');
+    langModal.querySelector('.modal-backdrop').addEventListener('click', closeLanguageModal);
+    langModal.addEventListener('click', function(e) {
+      var opt = e.target.closest('.language-option');
+      if (!opt) return;
+      var lang = opt.getAttribute('data-lang');
+      exports.I18n.setLanguage(lang);
+      closeLanguageModal();
+    });
+
     // --- Wake Lock ---
     exports.State.on('start', function() {
       requestWakeLock();
@@ -825,13 +871,14 @@ window.TimerApp = window.TimerApp || {};
     var isIOS = /iPhone|iPad|iPod/.test(ua);
     var isAndroid = /Android/.test(ua);
     var msg;
+    var t = exports.I18n.t;
 
     if (isIOS) {
-      msg = 'Tap the Share button then "Add to Home Screen"';
+      msg = t('installIOS');
     } else if (isAndroid) {
-      msg = 'Tap \u22EE \u2192 "Add to Home Screen" in your browser menu';
+      msg = t('installAndroid');
     } else {
-      msg = 'Bookmark this page (Ctrl+D) for quick access';
+      msg = t('installDesktop');
     }
 
     alert(msg);
@@ -853,27 +900,37 @@ window.TimerApp = window.TimerApp || {};
   }
 
   function formatDuration(totalSec) {
-    if (totalSec < 60) return totalSec + 's';
+    var t = exports.I18n.t;
+    if (totalSec < 60) return t('durationSec', {s: '' + totalSec});
     if (totalSec < 3600) {
       var m = Math.floor(totalSec / 60);
       var s = totalSec % 60;
-      return s > 0 ? m + 'm ' + s + 's' : m + 'm';
+      return s > 0 ? t('durationMinSec', {m: '' + m, s: '' + s}) : t('durationMin', {m: '' + m});
     }
     var h = Math.floor(totalSec / 3600);
     var rem = totalSec % 3600;
-    var m = Math.floor(rem / 60);
-    return m > 0 ? h + 'h ' + m + 'm' : h + 'h';
+    var m2 = Math.floor(rem / 60);
+    return m2 > 0 ? t('durationHourMin', {h: '' + h, m: '' + m2}) : t('durationHour', {h: '' + h});
   }
 
   function formatDurationShort(totalSec) {
-    if (totalSec < 60) return totalSec + 's';
+    var t = exports.I18n.t;
+    if (totalSec < 60) return t('durationSec', {s: '' + totalSec});
     var m = Math.floor(totalSec / 60);
     var s = totalSec % 60;
-    return s > 0 ? m + ':' + pad(s) : m + 'm';
+    return s > 0 ? t('durationShort', {m: '' + m, s: pad(s)}) : t('durationShortMin', {m: '' + m});
   }
 
   // ===== State change listener =====
   function wire(stateModule) {
+    // Language change refreshes the UI
+    exports.I18n.onChange(function() {
+      exports.I18n.updatePageLanguage();
+      updateConfigDisplay();
+      updateTimerDisplay();
+      renderRoutines();
+    });
+
     stateModule.on('phasechange', function() {
       updateTimerDisplay();
       flashPhaseLabel();
@@ -896,7 +953,15 @@ window.TimerApp = window.TimerApp || {};
       updateTimerDisplay();
       exports.Confetti.fire();
       var gif = document.getElementById('finish-gif');
-      if (gif) gif.classList.add('pop');
+      if (gif) {
+        var circle = document.querySelector('.countdown-container');
+        var bg = document.getElementById('timer-bg');
+        var cr = circle.getBoundingClientRect();
+        var br = bg.getBoundingClientRect();
+        gif.style.left = (cr.left - br.left + cr.width / 2) + 'px';
+        gif.style.top = (cr.top - br.top + cr.height / 2) + 'px';
+        gif.classList.add('pop');
+      }
     });
   }
 

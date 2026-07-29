@@ -144,10 +144,12 @@ window.TimerApp = window.TimerApp || {};
     });
   }
 
+  var cachedVoices = null;
+
   /**
    * Speak a phrase using the Speech Synthesis API.
    */
-  function speak(phrase) {
+  function speak(phrase, lang) {
     if (!window.speechSynthesis) return;
     // Cancel any ongoing speech
     window.speechSynthesis.cancel();
@@ -155,18 +157,43 @@ window.TimerApp = window.TimerApp || {};
     var utterance = new SpeechSynthesisUtterance(phrase);
     utterance.rate = 0.9;
     utterance.volume = 0.8;
+    if (lang) {
+      utterance.lang = lang;
+      // Try to find a matching voice for the language
+      if (!cachedVoices || cachedVoices.length === 0) {
+        cachedVoices = window.speechSynthesis.getVoices();
+      }
+      for (var i = 0; i < cachedVoices.length; i++) {
+        if (cachedVoices[i].lang.indexOf(lang) === 0) {
+          utterance.voice = cachedVoices[i];
+          break;
+        }
+      }
+    }
     window.speechSynthesis.speak(utterance);
+  }
+
+  // Preload voices — some browsers load them asynchronously
+  if (window.speechSynthesis) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = function() {
+      cachedVoices = window.speechSynthesis.getVoices();
+    };
   }
 
   /**
    * Announce a phase change.
    */
   function announcePhase(phase) {
+    var t = exports.I18n.t;
+    var lang = exports.I18n.getLanguage();
+    var SPEECH_LOCALE = { 'zh-HK': 'zh-HK', 'zh-TW': 'zh-TW', 'zh-CN': 'zh-CN', ja: 'ja-JP' };
+    var speechLang = SPEECH_LOCALE[lang] || '';
     switch (phase) {
-      case 'prepare': speak('Get Ready'); break;
-      case 'work': speak('Work'); break;
-      case 'rest': speak('Rest'); break;
-      case 'finished': speak('Workout complete'); break;
+      case 'prepare': speak(t('audioPrepare'), speechLang); break;
+      case 'work': speak(t('audioWork'), speechLang); break;
+      case 'rest': speak(t('audioRest'), speechLang); break;
+      case 'finished': speak(t('audioFinished'), speechLang); break;
     }
   }
 

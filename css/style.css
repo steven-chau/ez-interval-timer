@@ -186,7 +186,9 @@ body {
   cursor: pointer;
   transition: background 0.15s;
   text-decoration: none;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
   box-sizing: border-box;
 }
 
@@ -778,6 +780,43 @@ body {
   text-align: center;
 }
 
+/* ===== Language Options ===== */
+.language-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.language-option:hover {
+  border-color: var(--accent);
+  background: var(--surface-hover);
+}
+
+.language-option.active {
+  border-color: var(--accent);
+  background: var(--surface-active);
+}
+
+.language-option-name {
+  font-weight: 600;
+}
+
 /* ===== Validation Message ===== */
 .validation-msg {
   color: var(--accent);
@@ -862,8 +901,7 @@ body {
 /* ===== Finish GIF ===== */
 .finish-gif {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  /* left and top set by JS to match circle position */
   width: min(280px, 65vw);
   height: min(280px, 65vw);
   z-index: 50;
@@ -880,7 +918,7 @@ body {
 @keyframes popIn {
   0%   { transform: translate(-50%, -50%) scale(0.005); opacity: 0; }
   8%   { opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
 /* ===== Animations ===== */
