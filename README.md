@@ -1,7 +1,7 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/steven-chau/interval-timer/main/screenshots/timer-dark.png">
-    <img alt="Interval Timer - free online workout timer with work/rest intervals" src="https://raw.githubusercontent.com/steven-chau/interval-timer/main/screenshots/timer-light.png">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-dark.png">
+    <img alt="Interval Timer - free online workout timer with work/rest intervals" src="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-light.png">
   </picture>
 </div>
 
@@ -10,9 +10,9 @@
 
 **A free, no-install interval timer for workouts, HIIT, Tabata, circuit training, stretching, yoga, and any timed routine.** Runs in your browser. No sign-up, no ads, no app store.
 
-[![License](https://img.shields.io/github/license/steven-chau/interval-timer)](LICENSE)
+[![License](https://img.shields.io/github/license/steven-chau/ez-interval-timer)](LICENSE)
 
-**[Open the Timer →](https://steven-chau.github.io/interval-timer)**
+**[Open the Timer →](https://steven-chau.github.io/ez-interval-timer)**
 
 ---
 
@@ -69,7 +69,7 @@ Add it to your phone's home screen and use it like a native app. Includes a web 
 
 ## How to Use
 
-1. **Open** `https://steven-chau.github.io/interval-timer` on any device
+1. **Open** `https://steven-chau.github.io/ez-interval-timer` on any device
 2. **Set your routine** — adjust work time, rest time, and number of sets
 3. **Hit Start** — the get-ready countdown begins, then your workout starts
 4. **Save routines** you like for quick access next time
@@ -81,8 +81,8 @@ That's it. No account, no installation, no ads.
 Clone the repo and open `index.html` in any browser:
 
 ```bash
-git clone https://github.com/steven-chau/interval-timer.git
-cd interval-timer
+git clone https://github.com/steven-chau/ez-interval-timer.git
+cd ez-interval-timer
 open index.html  # or double-click in your file manager
 ```
 
@@ -112,6 +112,6 @@ MIT
 
 ---
 
-**[Open Interval Timer →](https://steven-chau.github.io/interval-timer)**
+**[Open Interval Timer →](https://steven-chau.github.io/ez-interval-timer)**
 
 *No ads. No sign-up. Just press Start.*
