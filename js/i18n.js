@@ -77,6 +77,12 @@ window.TimerApp = window.TimerApp || {};
       langZhTW: '台灣中文',
       langZhCN: '简体中文',
       langJa: '日本語',
+      trackRecords: 'Track Records',
+      modeDetailed: 'Detailed',
+      modeCalendar: 'Calendar',
+      loadMore: 'Load More',
+      noRecords: 'No workout records yet.',
+      recordsBackAria: 'Back',
       selectLanguage: 'Language'
     },
     'zh-HK': {
@@ -148,6 +154,12 @@ window.TimerApp = window.TimerApp || {};
       langZhTW: '台灣中文',
       langZhCN: '简体中文',
       langJa: '日本語',
+      trackRecords: '運動記錄',
+      modeDetailed: '詳細',
+      modeCalendar: '日曆',
+      loadMore: '載入更多',
+      noRecords: '未有運動記錄。',
+      recordsBackAria: '返回',
       selectLanguage: '語言'
     },
     'zh-TW': {
@@ -219,6 +231,12 @@ window.TimerApp = window.TimerApp || {};
       langZhTW: '台灣中文',
       langZhCN: '简体中文',
       langJa: '日本語',
+      trackRecords: '運動記錄',
+      modeDetailed: '詳細',
+      modeCalendar: '日曆',
+      loadMore: '載入更多',
+      noRecords: '未有運動記錄。',
+      recordsBackAria: '返回',
       selectLanguage: '語言'
     },
     'zh-CN': {
@@ -290,6 +308,12 @@ window.TimerApp = window.TimerApp || {};
       langZhTW: '台灣中文',
       langZhCN: '简体中文',
       langJa: '日本語',
+      trackRecords: '运动记录',
+      modeDetailed: '详细',
+      modeCalendar: '日历',
+      loadMore: '加载更多',
+      noRecords: '暂无运动记录。',
+      recordsBackAria: '返回',
       selectLanguage: '语言'
     },
     ja: {
@@ -361,6 +385,12 @@ window.TimerApp = window.TimerApp || {};
       langZhTW: '台灣中文',
       langZhCN: '简体中文',
       langJa: '日本語',
+      trackRecords: '記録',
+      modeDetailed: '詳細',
+      modeCalendar: 'カレンダー',
+      loadMore: 'もっと読み込む',
+      noRecords: 'まだ記録がありません。',
+      recordsBackAria: '戻る',
       selectLanguage: '言語'
     }
   };

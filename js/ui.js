@@ -11,6 +11,8 @@ window.TimerApp = window.TimerApp || {};
   var routinesGrid, routinesEmpty;
   var routineModal, modalTitle, btnModalCancel, btnModalSave;
   var btnMenu, menuBackdrop, menuDrawer, btnMenuClose, btnAddToHomescreen;
+  var recordsView, recordsList, recordsEmpty, btnLoadMore, btnModeDetailed, btnModeCalendar, btnRecordsBack;
+  var recordsDetailed, recordsCalendar, calendarGrid, calendarDayHeaders, calendarMonthLabel;
   var setsDisplay;
   var workMinDisplay, workSecDisplay;
   var restMinDisplay, restSecDisplay;
@@ -30,6 +32,10 @@ window.TimerApp = window.TimerApp || {};
 
   var modalConfig = {};
   var editingRoutineId = null;
+  var currentRoutineName = '';
+  var recordsOffset = 0;
+  var DAYS_PER_PAGE = 7;
+  var calendarYear, calendarMonth;
 
   // ===== Circumference constant =====
   var CIRCUMFERENCE = 2 * Math.PI * 90; // ~565.49
@@ -92,6 +98,20 @@ window.TimerApp = window.TimerApp || {};
     menuDrawer = document.getElementById('menu-drawer');
     btnMenuClose = document.getElementById('btn-menu-close');
     btnAddToHomescreen = document.getElementById('btn-add-to-homescreen');
+
+    // Records view
+    recordsView = document.getElementById('records-view');
+    recordsList = document.getElementById('records-list');
+    recordsEmpty = document.getElementById('records-empty');
+    btnLoadMore = document.getElementById('btn-load-more');
+    btnModeDetailed = document.getElementById('btn-mode-detailed');
+    btnModeCalendar = document.getElementById('btn-mode-calendar');
+    btnRecordsBack = document.getElementById('btn-records-back');
+    recordsDetailed = document.getElementById('records-detailed');
+    recordsCalendar = document.getElementById('records-calendar');
+    calendarGrid = document.getElementById('calendar-grid');
+    calendarDayHeaders = document.getElementById('calendar-day-headers');
+    calendarMonthLabel = document.getElementById('calendar-month-label');
   }
 
   // ===== Config Helpers =====
@@ -426,12 +446,14 @@ window.TimerApp = window.TimerApp || {};
   // ===== Timer View =====
   function showTimerView() {
     configView.classList.add('hidden');
+    recordsView.classList.add('hidden');
     timerView.classList.remove('hidden');
     updateTimerDisplay();
   }
 
   function showConfigView() {
     timerView.classList.add('hidden');
+    recordsView.classList.add('hidden');
     configView.classList.remove('hidden');
     updateConfigDisplay();
     renderRoutines();
@@ -442,6 +464,153 @@ window.TimerApp = window.TimerApp || {};
       gif.style.left = '';
       gif.style.top = '';
     }
+  }
+
+  // ===== Records View =====
+  function showRecordsView() {
+    configView.classList.add('hidden');
+    timerView.classList.add('hidden');
+    recordsView.classList.remove('hidden');
+    recordsOffset = 0;
+    var now = new Date();
+    calendarYear = now.getFullYear();
+    calendarMonth = now.getMonth();
+    renderDetailedView();
+  }
+
+  function hideRecordsView() {
+    recordsView.classList.add('hidden');
+    configView.classList.remove('hidden');
+    updateConfigDisplay();
+    renderRoutines();
+  }
+
+  function renderDetailedView() {
+    var t = exports.I18n.t;
+    var lang = exports.I18n.getLanguage();
+    var result = exports.Records.getPaginated(recordsOffset, DAYS_PER_PAGE, lang);
+
+    // Build day groups
+    var html = '';
+    for (var i = 0; i < result.days.length; i++) {
+      var day = result.days[i];
+      html += '<div class="records-day">';
+      html += '<div class="records-day-header">' + escapeHtml(day.label) + '</div>';
+      // Within a day, chronological order (oldest first)
+      for (var j = day.records.length - 1; j >= 0; j--) {
+        var rec = day.records[j];
+        var time = new Date(rec.completedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        html += '<div class="records-item">';
+        html += '<span class="records-item-name">' + escapeHtml(rec.name) + '</span>';
+        html += '<span class="records-item-time">' + escapeHtml(time) + '</span>';
+        html += '<span class="records-item-duration">' + escapeHtml(formatDuration(rec.duration)) + '</span>';
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+
+    recordsList.innerHTML = html;
+
+    if (result.days.length === 0 && recordsOffset === 0) {
+      recordsEmpty.classList.remove('hidden');
+    } else {
+      recordsEmpty.classList.add('hidden');
+    }
+
+    if (result.hasMore) {
+      btnLoadMore.classList.remove('hidden');
+    } else {
+      btnLoadMore.classList.add('hidden');
+    }
+  }
+
+  function loadMoreRecords() {
+    recordsOffset += DAYS_PER_PAGE;
+    renderDetailedView();
+  }
+
+  function renderCalendarView() {
+    var daily = exports.Records.getDailyDurations(calendarYear, calendarMonth);
+
+    // Compute max duration for color scaling
+    var maxDuration = 0;
+    var keys = Object.keys(daily);
+    for (var i = 0; i < keys.length; i++) {
+      if (daily[keys[i]] > maxDuration) maxDuration = daily[keys[i]];
+    }
+
+    function getLevel(sec) {
+      if (sec === 0) return 0;
+      if (maxDuration === 0) return 0;
+      var ratio = sec / maxDuration;
+      if (ratio <= 0.25) return 1;
+      if (ratio <= 0.5) return 2;
+      if (ratio <= 0.75) return 3;
+      return 4;
+    }
+
+    // Month label
+    var lang = exports.I18n.getLanguage();
+    var locale = lang === 'zh-HK' ? 'zh-Hant-HK' : lang === 'zh-TW' ? 'zh-Hant-TW' : lang === 'zh-CN' ? 'zh-Hans-CN' : lang === 'ja' ? 'ja-JP' : 'en-US';
+    var monthDate = new Date(calendarYear, calendarMonth, 1);
+    calendarMonthLabel.textContent = monthDate.toLocaleDateString(locale, { year: 'numeric', month: 'long' });
+
+    // Day headers (Sun–Sat in locale order)
+    var headerHtml = '';
+    for (var d = 0; d < 7; d++) {
+      // Start from Sunday
+      var dayDate = new Date(2021, 0, 3 + d); // Jan 3, 2021 is a Sunday
+      headerHtml += '<div class="calendar-day-header">' + dayDate.toLocaleDateString(locale, { weekday: 'narrow' }) + '</div>';
+    }
+    calendarDayHeaders.innerHTML = headerHtml;
+
+    // Build grid
+    var firstDay = new Date(calendarYear, calendarMonth, 1).getDay(); // 0=Sun
+    var daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+
+    var gridHtml = '';
+    // Empty cells before the 1st
+    for (var e = 0; e < firstDay; e++) {
+      gridHtml += '<div class="calendar-day empty"></div>';
+    }
+    // Day cells
+    for (var day = 1; day <= daysInMonth; day++) {
+      var dateKey = calendarYear + '-' + pad(calendarMonth + 1) + '-' + pad(day);
+      var duration = daily[dateKey] || 0;
+      var level = getLevel(duration);
+      gridHtml += '<div class="calendar-day l' + level + '" title="' + escapeHtml(formatDuration(duration)) + '">' + day + '</div>';
+    }
+    calendarGrid.innerHTML = gridHtml;
+
+    // Reset any explicit size from a previous render so the parent
+    // doesn't inflate before we measure available space.
+    calendarGrid.style.width = '';
+    calendarGrid.style.height = '';
+
+    // Size the grid to be as large as possible while roughly square
+    var calRect = recordsCalendar.getBoundingClientRect();
+    var navH = document.querySelector('.calendar-nav').getBoundingClientRect().height;
+    var headersH = calendarDayHeaders.getBoundingClientRect().height;
+    var legendH = document.querySelector('.calendar-legend').getBoundingClientRect().height;
+    var gaps = 24; // margins between sections
+    var availW = calRect.width;
+    var availH = calRect.height - navH - headersH - legendH - gaps;
+    var idealW = Math.min(availW, availH * 7 / 6);
+    var idealH = Math.min(availH, availW * 6 / 7);
+    calendarGrid.style.width = Math.floor(idealW) + 'px';
+    calendarGrid.style.height = Math.floor(idealH) + 'px';
+
+    // Disable next button when viewing current month
+    var now = new Date();
+    var isCurrentMonth = calendarYear === now.getFullYear() && calendarMonth === now.getMonth();
+    document.getElementById('btn-month-next').disabled = isCurrentMonth;
+  }
+
+  function changeMonth(delta) {
+    calendarMonth += delta;
+    if (calendarMonth < 0) { calendarMonth = 11; calendarYear--; }
+    if (calendarMonth > 11) { calendarMonth = 0; calendarYear++; }
+    renderCalendarView();
   }
 
   function updateTimerDisplay() {
@@ -631,6 +800,7 @@ window.TimerApp = window.TimerApp || {};
       var totalWork = config.workMinutes * 60 + config.workSeconds;
       if (totalWork === 0) return;
 
+      currentRoutineName = exports.I18n.t('quickstart');
       exports.State.init(getQuickstartConfig());
       exports.Audio.init();
       exports.State.transition('start');
@@ -792,6 +962,39 @@ window.TimerApp = window.TimerApp || {};
       closeLanguageModal();
     });
 
+    // --- Track Records ---
+    document.getElementById('btn-track-records').addEventListener('click', function() {
+      closeMenu();
+      showRecordsView();
+    });
+
+    btnRecordsBack.addEventListener('click', hideRecordsView);
+
+    btnModeDetailed.addEventListener('click', function() {
+      btnModeDetailed.classList.add('active');
+      btnModeCalendar.classList.remove('active');
+      recordsDetailed.classList.remove('hidden');
+      recordsCalendar.classList.add('hidden');
+      recordsOffset = 0;
+      renderDetailedView();
+    });
+
+    btnModeCalendar.addEventListener('click', function() {
+      btnModeDetailed.classList.remove('active');
+      btnModeCalendar.classList.add('active');
+      recordsDetailed.classList.add('hidden');
+      recordsCalendar.classList.remove('hidden');
+      var now = new Date();
+      calendarYear = now.getFullYear();
+      calendarMonth = now.getMonth();
+      renderCalendarView();
+    });
+
+    btnLoadMore.addEventListener('click', loadMoreRecords);
+
+    document.getElementById('btn-month-prev').addEventListener('click', function() { changeMonth(-1); });
+    document.getElementById('btn-month-next').addEventListener('click', function() { changeMonth(1); });
+
     // --- Wake Lock ---
     exports.State.on('start', function() {
       requestWakeLock();
@@ -817,6 +1020,7 @@ window.TimerApp = window.TimerApp || {};
     var totalWork = cfg.workMinutes * 60 + cfg.workSeconds;
     if (totalWork === 0) return;
 
+    currentRoutineName = routine.name;
     exports.State.init(cfg);
     exports.Audio.init();
     exports.State.transition('start');
@@ -929,6 +1133,14 @@ window.TimerApp = window.TimerApp || {};
       updateConfigDisplay();
       updateTimerDisplay();
       renderRoutines();
+      if (!recordsView.classList.contains('hidden')) {
+        recordsOffset = 0;
+        if (!recordsCalendar.classList.contains('hidden')) {
+          renderCalendarView();
+        } else {
+          renderDetailedView();
+        }
+      }
     });
 
     stateModule.on('phasechange', function() {
@@ -961,6 +1173,23 @@ window.TimerApp = window.TimerApp || {};
         gif.style.left = (cr.left - br.left + cr.width / 2) + 'px';
         gif.style.top = (cr.top - br.top + cr.height / 2) + 'px';
         gif.classList.add('pop');
+      }
+
+      // Record workout history
+      var st = exports.State.getState();
+      if (st) {
+        var secs = st.seconds;
+        var duration = secs.prepare
+          + (st.totalSets * secs.work)
+          + ((st.totalSets - 1) * secs.rest);
+        exports.Records.add({
+          name: currentRoutineName,
+          duration: duration,
+          sets: st.totalSets,
+          workSeconds: secs.work,
+          restSeconds: secs.rest,
+          prepareSeconds: secs.prepare
+        });
       }
     });
   }
