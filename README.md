@@ -1,7 +1,10 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/steven-chau/interval-timer/main/screenshots/timer-dark.png">
-  <img alt="Interval Timer - free online workout timer with work/rest intervals" src="https://raw.githubusercontent.com/steven-chau/interval-timer/main/screenshots/timer-light.png">
-</picture>
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/steven-chau/interval-timer/main/screenshots/timer-dark.png">
+    <img alt="Interval Timer - free online workout timer with work/rest intervals" src="https://raw.githubusercontent.com/steven-chau/interval-timer/main/screenshots/timer-light.png">
+  </picture>
+</div>
+
 
 # Interval Timer — Free Online Workout & HIIT Timer
 
