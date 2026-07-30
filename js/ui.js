@@ -1248,7 +1248,7 @@ window.TimerApp = window.TimerApp || {};
     // Sponsor button (always works)
     btnSponsor.addEventListener('click', function() {
       var lang = exports.I18n.getLanguage();
-      var url = 'https://steven-chau.github.io/ez-interval-timer/SPONSOR.' + lang;
+      var url = 'https://steven-chau.github.io/ez-interval-timer/SPONSOR.' + lang + '.html';
       window.open(url, '_blank', 'noopener');
       closeMenu();
     });
