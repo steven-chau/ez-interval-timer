@@ -14,7 +14,7 @@ window.TimerApp = window.TimerApp || {};
   var btnMenuFullscreen, menuFullscreenLabel;
   var btnMenuShare;
   var btnSponsor;
-  var btnMenu, menuBackdrop, menuDrawer, btnMenuClose, btnAddToHomescreen;
+  var btnMenu, menuBackdrop, menuDrawer, btnMenuClose;
   var recordsView, recordsList, recordsEmpty, btnLoadMore, btnModeDetailed, btnModeCalendar, btnRecordsBack;
   var recordsDetailed, recordsCalendar, calendarGrid, calendarDayHeaders, calendarMonthLabel;
   var setsDisplay;
@@ -114,7 +114,6 @@ window.TimerApp = window.TimerApp || {};
     menuBackdrop = document.getElementById('menu-backdrop');
     menuDrawer = document.getElementById('menu-drawer');
     btnMenuClose = document.getElementById('btn-menu-close');
-    btnAddToHomescreen = document.getElementById('btn-add-to-homescreen');
 
     // Records view
     recordsView = document.getElementById('records-view');
@@ -1095,10 +1094,6 @@ window.TimerApp = window.TimerApp || {};
     btnMenu.addEventListener('click', openMenu);
     btnMenuClose.addEventListener('click', closeMenu);
     menuBackdrop.addEventListener('click', closeMenu);
-    btnAddToHomescreen.addEventListener('click', function() {
-      closeMenu();
-      showInstallHelp();
-    });
 
     // --- Language ---
     document.getElementById('btn-language').addEventListener('click', function() {
@@ -1207,7 +1202,9 @@ window.TimerApp = window.TimerApp || {};
 
   // ===== Fullscreen =====
   function setupFullscreen() {
-    if (isIOS) {
+    var isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                    || navigator.standalone;
+    if (isIOS || isStandalone) {
       btnMenuFullscreen.style.display = 'none';
     } else {
       menuFullscreenLabel = btnMenuFullscreen.querySelector('span');
@@ -1266,24 +1263,6 @@ window.TimerApp = window.TimerApp || {};
   function closeMenu() {
     menuDrawer.classList.add('closed');
     menuBackdrop.classList.add('closed');
-  }
-
-  function showInstallHelp() {
-    var ua = navigator.userAgent || '';
-    var isIOS = /iPhone|iPad|iPod/.test(ua);
-    var isAndroid = /Android/.test(ua);
-    var msg;
-    var t = exports.I18n.t;
-
-    if (isIOS) {
-      msg = t('installIOS');
-    } else if (isAndroid) {
-      msg = t('installAndroid');
-    } else {
-      msg = t('installDesktop');
-    }
-
-    alert(msg);
   }
 
   // ===== Helpers =====
