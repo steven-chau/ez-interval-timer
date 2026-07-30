@@ -140,7 +140,7 @@ window.TimerApp = window.TimerApp || {};
       phaseWork: '運動',
       phaseRest: '休息',
       phasePaused: '已暫停',
-      phaseDone: '搞掂！',
+      phaseDone: '任務完成，恭喜恭喜！',
       setCounter: '第 {current} / {total} 組',
       setCounterComplete: '搞掂晒！',
       setCounterPaused: '第 {current} / {total} 組 (已暫停)',
