@@ -1256,11 +1256,6 @@ window.TimerApp = window.TimerApp || {};
 
   // ===== Menu =====
   function setupMenu() {
-    // Hide hamburger if already in standalone mode
-    if (window.matchMedia('(display-mode: standalone)').matches
-        || navigator.standalone) {
-      btnMenu.classList.add('hidden');
-    }
   }
 
   function openMenu() {
