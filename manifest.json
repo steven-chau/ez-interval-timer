@@ -1,6 +1,6 @@
 {
   "name": "EZ Interval Timer",
-  "short_name": "Timer",
+  "short_name": "EZ Timer",
   "description": "Interval timer for workouts, stretching, and timed routines",
   "start_url": ".",
   "display": "standalone",
