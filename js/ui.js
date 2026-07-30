@@ -1209,44 +1209,43 @@ window.TimerApp = window.TimerApp || {};
   function setupFullscreen() {
     if (isIOS) {
       btnMenuFullscreen.style.display = 'none';
-      return;
+    } else {
+      menuFullscreenLabel = btnMenuFullscreen.querySelector('span');
+
+      btnMenuFullscreen.addEventListener('click', function() {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          document.documentElement.requestFullscreen();
+        }
+        closeMenu();
+      });
+
+      document.addEventListener('fullscreenchange', function() {
+        var active = !!document.fullscreenElement;
+        var key = active ? 'fullscreenExit' : 'fullscreenEnter';
+        menuFullscreenLabel.setAttribute('data-i18n', key);
+        menuFullscreenLabel.textContent = exports.I18n.t(key);
+      });
     }
-
-    menuFullscreenLabel = btnMenuFullscreen.querySelector('span');
-
-    btnMenuFullscreen.addEventListener('click', function() {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        document.documentElement.requestFullscreen();
-      }
-      closeMenu();
-    });
-
-    document.addEventListener('fullscreenchange', function() {
-      var active = !!document.fullscreenElement;
-      var key = active ? 'fullscreenExit' : 'fullscreenEnter';
-      menuFullscreenLabel.setAttribute('data-i18n', key);
-      menuFullscreenLabel.textContent = exports.I18n.t(key);
-    });
 
     // Share button
-    if (!navigator.share) {
+    if (navigator.share) {
+      var shareData = {
+        title: 'EZ Interval Timer',
+        text: exports.I18n.t('appTitle'),
+        url: 'https://steven-chau.github.io/ez-interval-timer/'
+      };
+
+      btnMenuShare.addEventListener('click', function() {
+        navigator.share(shareData);
+        closeMenu();
+      });
+    } else {
       btnMenuShare.style.display = 'none';
-      return;
     }
 
-    var shareData = {
-      title: 'EZ Interval Timer',
-      text: exports.I18n.t('appTitle'),
-      url: 'https://steven-chau.github.io/ez-interval-timer/'
-    };
-
-    btnMenuShare.addEventListener('click', function() {
-      navigator.share(shareData);
-      closeMenu();
-    });
-
+    // Sponsor button (always works)
     btnSponsor.addEventListener('click', function() {
       var lang = exports.I18n.getLanguage();
       var url = 'https://steven-chau.github.io/ez-interval-timer/SPONSOR.' + lang;
