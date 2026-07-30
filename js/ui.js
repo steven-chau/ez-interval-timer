@@ -1230,20 +1230,20 @@ window.TimerApp = window.TimerApp || {};
     }
 
     // Share button
-    if (navigator.share) {
-      var shareData = {
-        title: 'EZ Interval Timer',
-        text: exports.I18n.t('appTitle'),
-        url: 'https://steven-chau.github.io/ez-interval-timer/'
-      };
+    var shareUrl = 'https://steven-chau.github.io/ez-interval-timer/';
 
-      btnMenuShare.addEventListener('click', function() {
-        navigator.share(shareData);
-        closeMenu();
-      });
-    } else {
-      btnMenuShare.style.display = 'none';
-    }
+    btnMenuShare.addEventListener('click', function() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'EZ Interval Timer',
+          text: exports.I18n.t('appTitle'),
+          url: shareUrl
+        });
+      } else {
+        navigator.clipboard.writeText(shareUrl);
+      }
+      closeMenu();
+    });
 
     // Sponsor button (always works)
     btnSponsor.addEventListener('click', function() {
