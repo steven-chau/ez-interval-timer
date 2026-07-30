@@ -410,12 +410,40 @@ window.TimerApp = window.TimerApp || {};
     }
   };
 
+  function detectLanguage() {
+    var supported = Object.keys(translations);
+    var nav = navigator;
+
+    // Exact match on primary language
+    if (nav.language && supported.indexOf(nav.language) !== -1) {
+      return nav.language;
+    }
+
+    // Walk the full preference list
+    var langs = nav.languages || [];
+    for (var i = 0; i < langs.length; i++) {
+      // Try exact match first
+      if (supported.indexOf(langs[i]) !== -1) {
+        return langs[i];
+      }
+      // Try prefix match (e.g. "zh" from "zh-SG")
+      var prefix = langs[i].split('-')[0];
+      for (var j = 0; j < supported.length; j++) {
+        if (supported[j].indexOf(prefix + '-') === 0) {
+          return supported[j];
+        }
+      }
+    }
+
+    return 'en';
+  }
+
   function getLanguage() {
     if (currentLang) return currentLang;
     try {
-      currentLang = localStorage.getItem(STORAGE_KEY) || 'en';
+      currentLang = localStorage.getItem(STORAGE_KEY) || detectLanguage();
     } catch (e) {
-      currentLang = 'en';
+      currentLang = detectLanguage();
     }
     return currentLang;
   }
