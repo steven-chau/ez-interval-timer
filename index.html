@@ -3,13 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="author" content="steven-chau/ez-interval-timer">
   <meta name="theme-color" content="#1a1a2e">
   <meta name="description" content="Interval timer for workouts, stretching, and timed routines">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="manifest" href="manifest.json">
+
+  <!-- Open Graph (WhatsApp, Facebook, Telegram, Slack) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://steven-chau.github.io/ez-interval-timer/">
+  <meta property="og:title" content="EZ Interval Timer">
+  <meta property="og:description" content="Free interval timer for workouts, HIIT, Tabata, stretching, yoga, and timed routines. No ads, no sign-up, works offline.">
+  <meta property="og:image" content="https://steven-chau.github.io/ez-interval-timer/screenshots/timer-light.png">
+  <meta property="og:image:width" content="1170">
+  <meta property="og:image:height" content="2532">
+  <meta property="og:site_name" content="EZ Interval Timer">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://steven-chau.github.io/ez-interval-timer/">
+  <meta name="twitter:title" content="EZ Interval Timer">
+  <meta name="twitter:description" content="Free interval timer for workouts, HIIT, Tabata, stretching, yoga, and timed routines. No ads, no sign-up, works offline.">
+  <meta name="twitter:image" content="https://steven-chau.github.io/ez-interval-timer/screenshots/timer-light.png">
+
   <title>EZ Interval Timer</title>
   <link rel="stylesheet" href="css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "@id": "https://steven-chau.github.io/ez-interval-timer#app",
+    "name": "EZ Interval Timer",
+    "url": "https://steven-chau.github.io/ez-interval-timer",
+    "description": "Free interval timer for workouts, HIIT, Tabata, stretching, yoga, and timed routines",
+    "applicationCategory": "HealthApplication",
+    "operatingSystem": "All",
+    "author": {
+      "@type": "Person",
+      "name": "Steven Chau",
+      "url": "https://github.com/steven-chau"
+    },
+    "sourceOrganization": {
+      "@type": "Organization",
+      "name": "steven-chau/ez-interval-timer",
+      "url": "https://github.com/steven-chau/ez-interval-timer"
+    }
+  }
+  </script>
 </head>
 <body>
   <div id="app">
@@ -33,6 +76,14 @@
           <button id="btn-track-records" class="menu-item">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
             <span data-i18n="trackRecords">Track Records</span>
+          </button>
+          <button id="btn-menu-fullscreen" class="menu-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+            <span data-i18n="fullscreenEnter">Enter Full Screen</span>
+          </button>
+          <button id="btn-menu-share" class="menu-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <span data-i18n="share">Share</span>
           </button>
           <button id="btn-add-to-homescreen" class="menu-item">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -266,6 +317,18 @@
       <div class="modal-actions">
         <button id="btn-modal-cancel" class="btn btn-secondary" data-i18n="cancel">Cancel</button>
         <button id="btn-modal-save" class="btn btn-primary" data-i18n="save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Confirm Delete Modal ===== -->
+  <div id="confirm-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <p id="confirm-modal-message"></p>
+      <div class="modal-actions">
+        <button id="btn-confirm-cancel" class="btn btn-secondary" data-i18n="cancel">Cancel</button>
+        <button id="btn-confirm-delete" class="btn btn-danger" data-i18n="delete">Delete</button>
       </div>
     </div>
   </div>

@@ -10,6 +10,10 @@ window.TimerApp = window.TimerApp || {};
   var btnExit, lockOverlay, timerControls;
   var routinesGrid, routinesEmpty;
   var routineModal, modalTitle, btnModalCancel, btnModalSave;
+  var confirmModal, confirmModalMessage, btnConfirmCancel, btnConfirmDelete;
+  var btnMenuFullscreen, menuFullscreenLabel;
+  var btnMenuShare;
+  var btnSponsor;
   var btnMenu, menuBackdrop, menuDrawer, btnMenuClose, btnAddToHomescreen;
   var recordsView, recordsList, recordsEmpty, btnLoadMore, btnModeDetailed, btnModeCalendar, btnRecordsBack;
   var recordsDetailed, recordsCalendar, calendarGrid, calendarDayHeaders, calendarMonthLabel;
@@ -32,6 +36,7 @@ window.TimerApp = window.TimerApp || {};
 
   var modalConfig = {};
   var editingRoutineId = null;
+  var pendingDeleteId = null;
   var currentRoutineName = '';
   var recordsOffset = 0;
   var DAYS_PER_PAGE = 7;
@@ -39,6 +44,7 @@ window.TimerApp = window.TimerApp || {};
 
   // ===== Circumference constant =====
   var CIRCUMFERENCE = 2 * Math.PI * 90; // ~565.49
+  var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
 
   // ===== Init =====
   function init() {
@@ -48,6 +54,7 @@ window.TimerApp = window.TimerApp || {};
     renderRoutines();
     setupMenu();
     bindEvents();
+    setupFullscreen();
   }
 
   function cacheDom() {
@@ -93,6 +100,15 @@ window.TimerApp = window.TimerApp || {};
 
     btnModalCancel = document.getElementById('btn-modal-cancel');
     btnModalSave = document.getElementById('btn-modal-save');
+
+    confirmModal = document.getElementById('confirm-modal');
+    confirmModalMessage = document.getElementById('confirm-modal-message');
+    btnConfirmCancel = document.getElementById('btn-confirm-cancel');
+    btnConfirmDelete = document.getElementById('btn-confirm-delete');
+
+    btnMenuFullscreen = document.getElementById('btn-menu-fullscreen');
+    btnMenuShare = document.getElementById('btn-menu-share');
+    btnSponsor = document.getElementById('btn-sponsor');
 
     btnMenu = document.getElementById('btn-menu');
     menuBackdrop = document.getElementById('menu-backdrop');
@@ -337,6 +353,18 @@ window.TimerApp = window.TimerApp || {};
   function closeModal() {
     routineModal.classList.add('hidden');
     editingRoutineId = null;
+  }
+
+  function openConfirmModal(name, id) {
+    pendingDeleteId = id;
+    confirmModalMessage.textContent = exports.I18n.t('confirmDelete', {name: name});
+    confirmModal.classList.remove('hidden');
+    btnConfirmCancel.focus();
+  }
+
+  function closeConfirmModal() {
+    confirmModal.classList.add('hidden');
+    pendingDeleteId = null;
   }
 
   function openLanguageModal() {
@@ -712,7 +740,20 @@ window.TimerApp = window.TimerApp || {};
     // Progress ring
     if (st.phaseSecondsTotal > 0) {
       var progress = remaining / st.phaseSecondsTotal;
-      progressRing.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
+      var offset = CIRCUMFERENCE * (1 - progress);
+      if (remaining === st.phaseSecondsTotal) {
+        // Snap to full at phase start
+        progressRing.style.transition = 'none';
+        progressRing.style.strokeDashoffset = offset;
+        progressRing.offsetHeight; // force reflow
+        progressRing.style.transition = '';
+      } else if (remaining === 0) {
+        // Use a short transition so the ring visibly drains to zero
+        progressRing.style.transition = 'stroke-dashoffset 0.35s linear, stroke 0.3s';
+        progressRing.style.strokeDashoffset = offset;
+      } else {
+        progressRing.style.strokeDashoffset = offset;
+      }
     } else {
       progressRing.style.strokeDashoffset = CIRCUMFERENCE;
     }
@@ -929,8 +970,12 @@ window.TimerApp = window.TimerApp || {};
           }
         }
       } else if (btn.classList.contains('routine-delete')) {
-        exports.Storage.deleteRoutine(id);
-        renderRoutines();
+        var routines = exports.Storage.getRoutines();
+        var name = '';
+        for (var jj = 0; jj < routines.length; jj++) {
+          if (routines[jj].id === id) { name = routines[jj].name; break; }
+        }
+        openConfirmModal(name, id);
       } else if (btn.classList.contains('routine-start')) {
         var routines = exports.Storage.getRoutines();
         for (var j = 0; j < routines.length; j++) {
@@ -946,6 +991,17 @@ window.TimerApp = window.TimerApp || {};
     btnModalCancel.addEventListener('click', closeModal);
     btnModalSave.addEventListener('click', saveModal);
     routineModal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+
+    // --- Confirm modal ---
+    btnConfirmCancel.addEventListener('click', closeConfirmModal);
+    btnConfirmDelete.addEventListener('click', function() {
+      if (pendingDeleteId) {
+        exports.Storage.deleteRoutine(pendingDeleteId);
+      }
+      closeConfirmModal();
+      renderRoutines();
+    });
+    confirmModal.querySelector('.modal-backdrop').addEventListener('click', closeConfirmModal);
 
     // --- Modal keyboard ---
     document.getElementById('modal-name').addEventListener('keydown', function(e) {
@@ -1147,6 +1203,56 @@ window.TimerApp = window.TimerApp || {};
       wakeLock.release().catch(function() {});
       wakeLock = null;
     }
+  }
+
+  // ===== Fullscreen =====
+  function setupFullscreen() {
+    if (isIOS) {
+      btnMenuFullscreen.style.display = 'none';
+      return;
+    }
+
+    menuFullscreenLabel = btnMenuFullscreen.querySelector('span');
+
+    btnMenuFullscreen.addEventListener('click', function() {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        document.documentElement.requestFullscreen();
+      }
+      closeMenu();
+    });
+
+    document.addEventListener('fullscreenchange', function() {
+      var active = !!document.fullscreenElement;
+      var key = active ? 'fullscreenExit' : 'fullscreenEnter';
+      menuFullscreenLabel.setAttribute('data-i18n', key);
+      menuFullscreenLabel.textContent = exports.I18n.t(key);
+    });
+
+    // Share button
+    if (!navigator.share) {
+      btnMenuShare.style.display = 'none';
+      return;
+    }
+
+    var shareData = {
+      title: 'EZ Interval Timer',
+      text: exports.I18n.t('appTitle'),
+      url: 'https://steven-chau.github.io/ez-interval-timer/'
+    };
+
+    btnMenuShare.addEventListener('click', function() {
+      navigator.share(shareData);
+      closeMenu();
+    });
+
+    btnSponsor.addEventListener('click', function() {
+      var lang = exports.I18n.getLanguage();
+      var url = 'https://steven-chau.github.io/ez-interval-timer/SPONSOR.' + lang;
+      window.open(url, '_blank', 'noopener');
+      closeMenu();
+    });
   }
 
   // ===== Menu =====

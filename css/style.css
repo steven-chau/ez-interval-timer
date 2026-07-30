@@ -19,6 +19,7 @@
   --color-prepare: #2980B9;
   --color-work: #E74C3C;
   --color-rest: #27AE60;
+  --ezit-ring-ease: 0.95s;
 }
 
 /* ===== Reset & Base ===== */
@@ -632,7 +633,7 @@ body {
   stroke-linecap: round;
   stroke-dasharray: 565.49;
   stroke-dashoffset: 0;
-  transition: stroke-dashoffset 0.95s linear, stroke 0.3s;
+  transition: stroke-dashoffset var(--ezit-ring-ease) linear, stroke 0.3s;
 }
 
 .countdown-digits {
@@ -766,6 +767,13 @@ body {
   font-weight: 600;
   margin-bottom: 1.25rem;
   color: var(--text);
+}
+
+.modal-content p {
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
 }
 
 .modal-field {

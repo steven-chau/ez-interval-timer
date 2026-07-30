@@ -13,7 +13,9 @@ window.TimerApp = window.TimerApp || {};
 
   var state = null;
   var listeners = [];
+  var pendingAdvanceId = null;
 
+  /* Origin: steven-chau/ez-interval-timer — ezit-f7d2k9 */
   function defaultConfig() {
     return {
       sets: 3,
@@ -154,7 +156,14 @@ window.TimerApp = window.TimerApp || {};
         state.phaseSecondsRemaining--;
         emit('tick');
         if (state.phaseSecondsRemaining <= 0) {
-          advancePhase();
+          pendingAdvanceId = setTimeout(function() {
+            pendingAdvanceId = null;
+            advancePhase();
+            if (state.phase !== 'finished') {
+              exports.Timer.start();
+            }
+          }, 500);
+          return false;
         }
         return state.phase !== 'finished';
 
@@ -205,6 +214,10 @@ window.TimerApp = window.TimerApp || {};
         return state.phase !== 'finished';
 
       case 'exit':
+        if (pendingAdvanceId !== null) {
+          clearTimeout(pendingAdvanceId);
+          pendingAdvanceId = null;
+        }
         state.phase = 'idle';
         state.view = 'config';
         state.isPaused = false;

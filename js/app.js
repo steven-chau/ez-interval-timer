@@ -22,6 +22,11 @@ window.TimerApp = window.TimerApp || {};
     }, { once: true });
   }
 
+  // Register service worker for offline support
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js', { scope: '/ez-interval-timer/' });
+  }
+
   // Start the app when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
