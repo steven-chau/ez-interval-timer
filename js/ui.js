@@ -4,7 +4,7 @@ window.TimerApp = window.TimerApp || {};
   'use strict';
 
   // ===== DOM references (cached on init) =====
-  var configView, timerView, timerBg, phaseLabel, countdownDigits, countdownContainer;
+  var configView, timerView, timerBg, routineLabel, phaseLabel, countdownDigits, countdownContainer;
   var progressRing, setCounter, btnPlayPause, iconPause, iconPlay;
   var btnSkipBack, btnSkipFwd, btnLock, iconUnlocked, iconLocked;
   var btnExit, lockOverlay, timerControls;
@@ -38,6 +38,7 @@ window.TimerApp = window.TimerApp || {};
   var editingRoutineId = null;
   var pendingDeleteId = null;
   var currentRoutineName = '';
+  var playlist = null;
   var recordsOffset = 0;
   var DAYS_PER_PAGE = 7;
   var calendarYear, calendarMonth;
@@ -61,6 +62,7 @@ window.TimerApp = window.TimerApp || {};
     configView = document.getElementById('config-view');
     timerView = document.getElementById('timer-view');
     timerBg = document.getElementById('timer-bg');
+    routineLabel = document.getElementById('routine-label');
     phaseLabel = document.getElementById('phase-label');
     countdownDigits = document.getElementById('countdown-digits');
     countdownContainer = document.querySelector('.countdown-container');
@@ -434,6 +436,10 @@ window.TimerApp = window.TimerApp || {};
 
     routinesEmpty.classList.add('hidden');
 
+    if (routines.length > 1) {
+      routinesGrid.appendChild(createAllCard(routines));
+    }
+
     for (var i = 0; i < routines.length; i++) {
       routinesGrid.appendChild(createRoutineCard(routines[i]));
     }
@@ -538,6 +544,35 @@ window.TimerApp = window.TimerApp || {};
         '</button>' +
         '<button class="btn btn-primary routine-start btn-start-icon" data-id="' + routine.id + '" aria-label="' + escapeHtml(t('start')) + '">' +
           '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>' +
+        '</button>' +
+      '</div>';
+
+    return card;
+  }
+
+  function createAllCard(routines) {
+    var card = document.createElement('div');
+    card.className = 'routine-card routine-card-all';
+    var t = exports.I18n.t;
+
+    var totalSec = 0;
+    for (var i = 0; i < routines.length; i++) {
+      var r = routines[i];
+      totalSec += r.prepareSeconds +
+        (r.sets * (r.workMinutes * 60 + r.workSeconds)) +
+        ((r.sets - 1) * (r.restMinutes * 60 + r.restSeconds));
+    }
+
+    card.innerHTML =
+      '<div class="routine-card-all-name">' + escapeHtml(t('all')) + '</div>' +
+      '<div class="routine-card-duration">' + formatDuration(totalSec) + '</div>' +
+      '<div class="routine-card-all-actions">' +
+        '<button class="btn btn-secondary routine-all-shuffle">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>' +
+          '<span>' + escapeHtml(t('shuffle')) + '</span>' +
+        '</button>' +
+        '<button class="btn btn-primary routine-all-play" aria-label="' + escapeHtml(t('start')) + '">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>' +
         '</button>' +
       '</div>';
 
@@ -720,6 +755,7 @@ window.TimerApp = window.TimerApp || {};
     // Phase label & color
     var phaseClass = exports.State.getPhaseClass();
     timerBg.className = 'timer-bg ' + phaseClass;
+    routineLabel.textContent = currentRoutineName;
     phaseLabel.textContent = getPhaseLabelText(st);
     phaseLabel.classList.remove('flash');
 
@@ -815,7 +851,10 @@ window.TimerApp = window.TimerApp || {};
   }
 
   // ===== Exit =====
+  var finishAutoExit = null;
+
   function exitTimer() {
+    if (finishAutoExit) { clearTimeout(finishAutoExit); finishAutoExit = null; }
     exports.State.transition('exit');
     exports.Timer.stop();
     showConfigView();
@@ -941,6 +980,16 @@ window.TimerApp = window.TimerApp || {};
     routinesGrid.addEventListener('click', function(e) {
       var btn = e.target.closest('button');
       if (!btn) return;
+
+      if (btn.classList.contains('routine-all-play')) {
+        startPlaylist(exports.Storage.getRoutines(), false);
+        return;
+      }
+      if (btn.classList.contains('routine-all-shuffle')) {
+        startPlaylist(exports.Storage.getRoutines(), true);
+        return;
+      }
+
       var id = btn.dataset.id;
       if (!id) return;
 
@@ -1039,8 +1088,9 @@ window.TimerApp = window.TimerApp || {};
       var st = State.getState();
       if (wasActive && st.phase === 'finished') {
         exports.Timer.stop();
-        // Brief delay before returning to config
-        setTimeout(function() { showConfigView(); }, 2000);
+        if (!playlist || playlist.index >= playlist.routines.length - 1) {
+          setTimeout(function() { showConfigView(); }, 2000);
+        }
       }
     });
 
@@ -1170,11 +1220,30 @@ window.TimerApp = window.TimerApp || {};
     if (totalWork === 0) return;
 
     currentRoutineName = routine.name;
+    exports.Audio.setRoutineName(currentRoutineName);
+    if (!playlist) exports.Audio.setSuppressFinished(false);
     exports.State.init(cfg);
     exports.Audio.init();
     exports.State.transition('start');
     exports.Timer.start();
     showTimerView();
+  }
+
+  function shuffleArray(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = temp;
+    }
+    return arr;
+  }
+
+  function startPlaylist(routines, shouldShuffle) {
+    var list = shouldShuffle ? shuffleArray(routines.slice()) : routines.slice();
+    playlist = { routines: list, index: 0 };
+    exports.Audio.setSuppressFinished(true);
+    startRoutine(list[0]);
   }
 
   // ===== Wake Lock =====
@@ -1334,28 +1403,14 @@ window.TimerApp = window.TimerApp || {};
     });
 
     stateModule.on('exit', function() {
+      playlist = null;
       showConfigView();
     });
 
     stateModule.on('finish', function() {
       exports.Timer.stop();
-      // Capture circle position before we hide it
-      var circle = document.querySelector('.countdown-container');
-      var bg = document.getElementById('timer-bg');
-      var cr = circle.getBoundingClientRect();
-      var br = bg.getBoundingClientRect();
-      var cx = cr.left - br.left + cr.width / 2;
-      var cy = cr.top - br.top + cr.height / 2;
-      updateTimerDisplay();
-      exports.Confetti.fire();
-      var gif = document.getElementById('finish-gif');
-      if (gif) {
-        gif.style.left = cx + 'px';
-        gif.style.top = cy + 'px';
-        gif.classList.add('pop');
-      }
 
-      // Record workout history
+      // Record workout history for every completed routine
       var st = exports.State.getState();
       if (st) {
         var secs = st.seconds;
@@ -1370,6 +1425,36 @@ window.TimerApp = window.TimerApp || {};
           restSeconds: secs.rest,
           prepareSeconds: secs.prepare
         });
+      }
+
+      // If there are more routines in the playlist, chain to the next one
+      if (playlist && playlist.index < playlist.routines.length - 1) {
+        playlist.index++;
+        var isLast = playlist.index >= playlist.routines.length - 1;
+        exports.Audio.setSuppressFinished(!isLast);
+        var next = playlist.routines[playlist.index];
+        setTimeout(function() {
+          startRoutine(next);
+        }, 1500);
+        return;
+      }
+      playlist = null;
+
+      finishAutoExit = setTimeout(function() { exitTimer(); }, 12000);
+      // Capture circle position before we hide it
+      var circle = document.querySelector('.countdown-container');
+      var bg = document.getElementById('timer-bg');
+      var cr = circle.getBoundingClientRect();
+      var br = bg.getBoundingClientRect();
+      var cx = cr.left - br.left + cr.width / 2;
+      var cy = cr.top - br.top + cr.height / 2;
+      updateTimerDisplay();
+      exports.Confetti.fire();
+      var gif = document.getElementById('finish-gif');
+      if (gif) {
+        gif.style.left = cx + 'px';
+        gif.style.top = cy + 'px';
+        gif.classList.add('pop');
       }
     });
   }

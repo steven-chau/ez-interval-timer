@@ -64,6 +64,7 @@ window.TimerApp = window.TimerApp || {};
       setCounterComplete: 'Complete!',
       setCounterPaused: 'Set {current} / {total} (Paused)',
       audioPrepare: 'Get Ready',
+      audioPrepareName: 'Get ready for {name}',
       audioWork: 'Work',
       audioRest: 'Rest',
       audioFinished: 'Workout complete',
@@ -87,7 +88,9 @@ window.TimerApp = window.TimerApp || {};
       loadMore: 'Load More',
       noRecords: 'No workout records yet.',
       recordsBackAria: 'Back',
-      selectLanguage: 'Language'
+      selectLanguage: 'Language',
+      all: 'All',
+      shuffle: 'Shuffle'
     },
     'zh-HK': {
       appTitle: '簡易計時器',
@@ -145,6 +148,7 @@ window.TimerApp = window.TimerApp || {};
       setCounterComplete: '搞掂晒！',
       setCounterPaused: '第 {current} / {total} 組 (已暫停)',
       audioPrepare: '準備',
+      audioPrepareName: '準備做{name}',
       audioWork: '做運動',
       audioRest: '休息',
       audioFinished: '運動完成',
@@ -168,7 +172,9 @@ window.TimerApp = window.TimerApp || {};
       loadMore: '載入更多',
       noRecords: '未有運動記錄。',
       recordsBackAria: '返回',
-      selectLanguage: '語言'
+      selectLanguage: '語言',
+      all: '全部',
+      shuffle: '隨機'
     },
     'zh-TW': {
       appTitle: '簡易計時器',
@@ -226,6 +232,7 @@ window.TimerApp = window.TimerApp || {};
       setCounterComplete: '全部完成！',
       setCounterPaused: '第 {current} / {total} 組 (已暫停)',
       audioPrepare: '準備',
+      audioPrepareName: '準備做{name}',
       audioWork: '開始運動',
       audioRest: '休息一下',
       audioFinished: '運動完成',
@@ -249,7 +256,9 @@ window.TimerApp = window.TimerApp || {};
       loadMore: '載入更多',
       noRecords: '未有運動記錄。',
       recordsBackAria: '返回',
-      selectLanguage: '語言'
+      selectLanguage: '語言',
+      all: '全部',
+      shuffle: '隨機'
     },
     'zh-CN': {
       appTitle: '简易计时器',
@@ -307,6 +316,7 @@ window.TimerApp = window.TimerApp || {};
       setCounterComplete: '全部完成！',
       setCounterPaused: '第 {current} / {total} 组 (已暂停)',
       audioPrepare: '准备',
+      audioPrepareName: '准备做{name}',
       audioWork: '开始运动',
       audioRest: '休息一下',
       audioFinished: '运动完成',
@@ -330,7 +340,9 @@ window.TimerApp = window.TimerApp || {};
       loadMore: '加载更多',
       noRecords: '暂无运动记录。',
       recordsBackAria: '返回',
-      selectLanguage: '语言'
+      selectLanguage: '语言',
+      all: '全部',
+      shuffle: '随机'
     },
     ja: {
       appTitle: 'EZ インターバルタイマー',
@@ -388,6 +400,7 @@ window.TimerApp = window.TimerApp || {};
       setCounterComplete: '完了！',
       setCounterPaused: 'セット {current} / {total} (一時停止中)',
       audioPrepare: '準備',
+      audioPrepareName: '{name}の準備',
       audioWork: '運動しましょう',
       audioRest: '休みましょう',
       audioFinished: 'ワークアウト完了',
@@ -411,7 +424,9 @@ window.TimerApp = window.TimerApp || {};
       loadMore: 'もっと読み込む',
       noRecords: 'まだ記録がありません。',
       recordsBackAria: '戻る',
-      selectLanguage: '言語'
+      selectLanguage: '言語',
+      all: '全部',
+      shuffle: 'シャッフル'
     }
   };
 

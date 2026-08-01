@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <link rel="icon" href="favicon.ico" sizes="any">
   <meta name="author" content="steven-chau/ez-interval-timer">
   <meta name="theme-color" content="#1a1a2e">
   <meta name="description" content="Interval timer for workouts, stretching, and timed routines">
@@ -98,8 +99,7 @@
             <span data-i18n="sponsor">Sponsor</span>
           </button>
         </div>
-        <!-- VERSION: update this single line when releasing -->
-        <div class="menu-footer">v1.1</div>
+        <div class="menu-footer" id="menu-footer"></div>
       </div>
 
       <header class="config-header">
@@ -178,6 +178,7 @@
       <div class="timer-bg" id="timer-bg">
         <div id="lock-overlay" class="lock-overlay hidden"></div>
         <div class="timer-content">
+          <div class="routine-label" id="routine-label"></div>
           <div class="phase-label" id="phase-label">PREPARE</div>
 
           <div class="countdown-container">

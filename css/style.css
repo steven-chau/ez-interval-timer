@@ -492,6 +492,35 @@ body {
   background: var(--surface-hover);
 }
 
+.routine-card-all {
+  cursor: default;
+  border-color: var(--accent);
+  background: var(--surface-hover);
+}
+
+.routine-card-all-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.routine-card-all-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.routine-card-all-actions .btn {
+  flex: 1;
+  text-align: center;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
 .routine-card-header {
   display: flex;
   align-items: flex-start;
@@ -604,6 +633,20 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+}
+
+/* ===== Routine Label ===== */
+.routine-label {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.6);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  margin-bottom: 1rem;
+}
+
+.routine-label:empty {
+  display: none;
 }
 
 /* ===== Phase Label ===== */

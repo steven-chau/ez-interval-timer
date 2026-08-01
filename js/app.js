@@ -16,15 +16,69 @@ window.TimerApp = window.TimerApp || {};
     // Initialize UI (renders routines, binds events, loads saved config)
     exports.UI.init();
 
+    // Load version from sw.js (single source of truth)
+    loadVersion();
+
     // Initialize audio context on first user interaction
     document.addEventListener('click', function initAudio() {
       exports.Audio.init();
     }, { once: true });
   }
 
+  function loadVersion() {
+    fetch('sw.js')
+      .then(function(res) { return res.text(); })
+      .then(function(text) {
+        var match = text.match(/var VERSION = '([^']+)'/);
+        if (match) {
+          var el = document.getElementById('menu-footer');
+          if (el) el.textContent = 'v' + match[1];
+        }
+      });
+  }
+
   // Register service worker for offline support
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js', { scope: '/ez-interval-timer/' });
+    navigator.serviceWorker.register('sw.js', { scope: '/ez-interval-timer/' })
+      .then(function(reg) {
+        // Notify installed users when an update is available
+        reg.addEventListener('updatefound', function() {
+          var newWorker = reg.installing;
+          if (!newWorker) return;
+          newWorker.addEventListener('statechange', function() {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdateAvailable();
+            }
+          });
+        });
+      });
+  }
+
+  function showUpdateAvailable() {
+    var isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    if (!isStandalone) return;
+
+    // Don't show multiple banners
+    if (document.getElementById('update-banner')) return;
+
+    var banner = document.createElement('div');
+    banner.id = 'update-banner';
+    banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#ffd54f;color:#333;text-align:center;padding:12px 16px;z-index:9999;cursor:pointer;font-size:14px;box-shadow:0 -2px 8px rgba(0,0,0,0.2);';
+    banner.textContent = 'New version available — Tap to update';
+
+    banner.addEventListener('click', function() {
+      navigator.serviceWorker.ready.then(function(readyReg) {
+        if (readyReg.waiting) {
+          readyReg.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+      });
+      banner.textContent = 'Updating...';
+      navigator.serviceWorker.addEventListener('controllerchange', function() {
+        window.location.reload();
+      });
+    });
+
+    document.body.appendChild(banner);
   }
 
   // Start the app when DOM is ready

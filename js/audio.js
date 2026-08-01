@@ -145,6 +145,8 @@ window.TimerApp = window.TimerApp || {};
   }
 
   var cachedVoices = null;
+  var routineName = '';
+  var suppressFinished = false;
 
   /**
    * Speak a phrase using the Speech Synthesis API.
@@ -190,10 +192,14 @@ window.TimerApp = window.TimerApp || {};
     var SPEECH_LOCALE = { 'zh-HK': 'zh-HK', 'zh-TW': 'zh-TW', 'zh-CN': 'zh-CN', ja: 'ja-JP' };
     var speechLang = SPEECH_LOCALE[lang] || '';
     switch (phase) {
-      case 'prepare': speak(t('audioPrepare'), speechLang); break;
+      case 'prepare':
+        speak(routineName ? t('audioPrepareName', { name: routineName }) : t('audioPrepare'), speechLang);
+        break;
       case 'work': speak(t('audioWork'), speechLang); break;
       case 'rest': speak(t('audioRest'), speechLang); break;
-      case 'finished': speak(t('audioFinished'), speechLang); break;
+      case 'finished':
+        if (!suppressFinished) speak(t('audioFinished'), speechLang);
+        break;
     }
   }
 
@@ -230,7 +236,9 @@ window.TimerApp = window.TimerApp || {};
     transitionTone: transitionTone,
     completionChime: completionChime,
     speak: speak,
-    wire: wire
+    wire: wire,
+    setRoutineName: function(name) { routineName = name; },
+    setSuppressFinished: function(val) { suppressFinished = val; }
   };
 
 })(window.TimerApp);

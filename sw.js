@@ -1,4 +1,5 @@
-var CACHE = 'ez-interval-timer-v1';
+var VERSION = '1.1.16';
+var CACHE = 'ez-interval-timer-v' + VERSION;
 
 var ASSETS = [
   '/ez-interval-timer/',
@@ -21,9 +22,16 @@ var ASSETS = [
 ];
 
 self.addEventListener('install', function(e) {
+  self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE).then(function(cache) {
-      return cache.addAll(ASSETS);
+      return Promise.all(
+        ASSETS.map(function(url) {
+          return cache.add(url).catch(function(err) {
+            console.warn('SW: failed to cache ' + url, err);
+          });
+        })
+      );
     })
   );
 });
@@ -35,8 +43,25 @@ self.addEventListener('activate', function(e) {
         keys.filter(function(k) { return k !== CACHE; })
             .map(function(k) { return caches.delete(k); })
       );
+    }).then(function() {
+      return clients.claim();
+    }).then(function() {
+      return clients.matchAll().then(function(clientList) {
+        clientList.forEach(function(client) {
+          client.postMessage({ type: 'VERSION', version: VERSION });
+        });
+      });
     })
   );
+});
+
+self.addEventListener('message', function(e) {
+  if (e.data && e.data.type === 'GET_VERSION') {
+    e.source.postMessage({ type: 'VERSION', version: VERSION });
+  }
+  if (e.data && e.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener('fetch', function(e) {
