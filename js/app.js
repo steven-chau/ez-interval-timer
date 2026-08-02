@@ -19,11 +19,16 @@ window.TimerApp = window.TimerApp || {};
     // Load version from sw.js (single source of truth)
     loadVersion();
 
+    // About modal — click version in menu footer to open
+    setupAboutModal();
+
     // Initialize audio context on first user interaction
     document.addEventListener('click', function initAudio() {
       exports.Audio.init();
     }, { once: true });
   }
+
+  var appVersion = '';
 
   function loadVersion() {
     fetch('sw.js')
@@ -31,10 +36,31 @@ window.TimerApp = window.TimerApp || {};
       .then(function(text) {
         var match = text.match(/var VERSION = '([^']+)'/);
         if (match) {
-          var el = document.getElementById('menu-footer');
-          if (el) el.textContent = 'v' + match[1];
+          appVersion = match[1];
+          var el = document.getElementById('menu-footer-version');
+          if (el) el.textContent = 'v' + appVersion;
         }
       });
+  }
+
+  function setupAboutModal() {
+    var modal = document.getElementById('about-modal');
+    if (!modal) return;
+
+    // Open modal when version is clicked
+    var footer = document.getElementById('menu-footer');
+    if (footer) {
+      footer.addEventListener('click', function() {
+        var verEl = document.getElementById('about-version');
+        if (verEl) verEl.textContent = 'v' + appVersion;
+        modal.classList.remove('hidden');
+      });
+    }
+
+    // Close on backdrop click
+    modal.querySelector('.modal-backdrop').addEventListener('click', function() {
+      modal.classList.add('hidden');
+    });
   }
 
   // Register service worker for offline support

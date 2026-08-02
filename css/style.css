@@ -201,9 +201,77 @@ body {
   margin: 0 0.75rem;
   padding: 0.75rem 1rem 0.5rem;
   border-top: 1px solid var(--border);
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+#menu-footer-version {
+  cursor: pointer;
+}
+
+#menu-footer-version:hover {
+  color: var(--accent);
+}
+
+/* ===== About Modal ===== */
+.about-modal-content {
+  max-width: 320px;
+  text-align: center;
+}
+
+.about-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.about-icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 20px;
+}
+
+.about-app-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+.about-version {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+}
+
+.about-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.about-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+.about-link:hover {
+  background: var(--surface-hover);
+  color: var(--text);
 }
 
 /* ===== Panel ===== */
