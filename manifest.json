@@ -1,4 +1,5 @@
 {
+  "id": "https://steven-chau.github.io/ez-interval-timer/",
   "name": "EZ Interval Timer",
   "short_name": "EZ Timer",
   "description": "Interval timer for workouts, stretching, and timed routines",
@@ -17,6 +18,15 @@
       "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/timer-dark.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Timer view in dark mode"
     }
   ]
 }
