@@ -3,10 +3,25 @@ window.TimerApp = window.TimerApp || {};
 (function(exports) {
   'use strict';
 
-  var MAX_CHUNK_BYTES = 800;
+  var MAX_CHUNK_BYTES = 1800;
+
+  function stripRoutine(r) {
+    return {
+      name: r.name,
+      sets: r.sets,
+      workMinutes: r.workMinutes,
+      workSeconds: r.workSeconds,
+      restMinutes: r.restMinutes,
+      restSeconds: r.restSeconds,
+      prepareMinutes: r.prepareMinutes || 0,
+      prepareSeconds: r.prepareSeconds || 10
+    };
+  }
 
   function getRoutines() {
-    return exports.Storage.getRoutines();
+    var routines = exports.Storage.getRoutines();
+    // Strip id and order — not needed for import
+    return routines.map(stripRoutine);
   }
 
   // ===== Export =====
@@ -130,19 +145,25 @@ window.TimerApp = window.TimerApp || {};
     importTotal = -1;
     document.getElementById('import-progress').textContent = '';
     document.getElementById('import-actions').classList.add('hidden');
-    document.getElementById('qr-reader').innerHTML = '';
 
-    if (!html5QrCode) {
-      html5QrCode = new Html5Qrcode('qr-reader');
+    // Clean up any previous scanner instance
+    if (html5QrCode) {
+      html5QrCode.stop().then(function() {
+        html5QrCode.clear();
+      }).catch(function() {});
     }
+
+    var readerEl = document.getElementById('qr-reader');
+    readerEl.innerHTML = '';
+    html5QrCode = new Html5Qrcode('qr-reader');
 
     html5QrCode.start(
       { facingMode: 'environment' },
-      { fps: 10, qrbox: 250 },
+      { fps: 10, qrbox: { width: 250, height: 250 } },
       onScanSuccess,
       function() {} // ignore scan errors
     ).catch(function(err) {
-      document.getElementById('qr-reader').textContent = 'Camera error: ' + err.message;
+      readerEl.textContent = 'Camera error: ' + err.message;
     });
   }
 
@@ -185,7 +206,9 @@ window.TimerApp = window.TimerApp || {};
 
   function finishImport() {
     if (html5QrCode) {
-      html5QrCode.stop().catch(function() {});
+      html5QrCode.stop().then(function() {
+        html5QrCode.clear();
+      }).catch(function() {});
     }
 
     // Assemble routines in order
@@ -239,7 +262,10 @@ window.TimerApp = window.TimerApp || {};
 
   function closeImport() {
     if (html5QrCode) {
-      html5QrCode.stop().catch(function() {});
+      html5QrCode.stop().then(function() {
+        html5QrCode.clear();
+      }).catch(function() {});
+      html5QrCode = null;
     }
     var modal = document.getElementById('import-modal');
     if (modal) modal.classList.add('hidden');
