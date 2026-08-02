@@ -574,7 +574,7 @@ body {
 
 .routines-empty {
   text-align: center;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   padding: 2rem 1rem;
   font-size: 0.9rem;
 }
