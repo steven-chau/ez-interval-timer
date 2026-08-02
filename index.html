@@ -404,11 +404,18 @@
         <button id="btn-import-merge" class="btn btn-primary" data-i18n="importMerge">Import</button>
         <button id="btn-import-cancel" class="btn btn-secondary" data-i18n="cancel">Cancel</button>
       </div>
+      <p class="qr-instruction" style="margin-top:0.75rem;">Or <label id="import-file-label" class="import-file-link">upload a screenshot</label> of the QR code.</p>
+      <input type="file" id="import-file-input" accept="image/*" style="display:none;">
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <!-- QR libraries — sourced from:
+       qrcode-generator@1.4.4  https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js
+       jsqr@1.4.0               https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js
+       html5-qrcode@2.3.8       https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js -->
+  <script src="js/vendor/qrcode-generator.min.js"></script>
+  <script src="js/vendor/jsQR.js"></script>
+  <script src="js/vendor/html5-qrcode.min.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/state.js"></script>
   <script src="js/timer.js"></script>

@@ -27,6 +27,12 @@ window.TimerApp = window.TimerApp || {};
   // ===== Export =====
 
   function openExport() {
+    if (typeof qrcode === 'undefined') {
+      console.error('Export: qrcode-generator library not loaded from CDN');
+      alert('QR code library failed to load. Please check your internet connection.');
+      return;
+    }
+
     var routines = getRoutines();
     if (routines.length === 0) {
       alert(exports.I18n.t('noRoutinesToExport'));
@@ -34,11 +40,14 @@ window.TimerApp = window.TimerApp || {};
     }
 
     var json = JSON.stringify(routines);
+    console.log('Export: ' + routines.length + ' routines, ' + json.length + ' bytes');
+
     var chunks;
     if (json.length <= MAX_CHUNK_BYTES) {
       chunks = [{ i: 0, n: 1, d: routines }];
     } else {
       chunks = chunkRoutines(routines, MAX_CHUNK_BYTES);
+      console.log('Export: split into ' + chunks.length + ' QR frames');
     }
 
     showExportModal(chunks);
@@ -84,17 +93,43 @@ window.TimerApp = window.TimerApp || {};
 
     function renderQr() {
       var chunk = chunks[currentIdx];
+      var payload = JSON.stringify(chunk);
+
       container.innerHTML = '';
       try {
-        new QRCode(container, {
-          text: JSON.stringify(chunk),
-          width: 280,
-          height: 280,
-          colorDark: '#000000',
-          colorLight: '#ffffff',
-          correctLevel: QRCode.CorrectLevel.M
-        });
+        var qr = qrcode(0, 'L');
+        qr.addData(payload);
+        qr.make();
+        var moduleCount = qr.getModuleCount();
+        console.log('QR version: ~' + Math.ceil((moduleCount - 17) / 4) + ', modules: ' + moduleCount + 'x' + moduleCount);
+
+        var QUIET = 4; // modules of white border required by ZXing
+        var targetSize = 340;
+        var scale = Math.max(2, Math.floor(targetSize / (moduleCount + QUIET * 2)));
+        var paddedSize = (moduleCount + QUIET * 2) * scale;
+
+        var canvas = document.createElement('canvas');
+        canvas.width = paddedSize;
+        canvas.height = paddedSize;
+        var ctx = canvas.getContext('2d');
+
+        // White background (quiet zone)
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, paddedSize, paddedSize);
+
+        // Draw QR modules
+        for (var row = 0; row < moduleCount; row++) {
+          for (var col = 0; col < moduleCount; col++) {
+            if (qr.isDark(row, col)) {
+              ctx.fillStyle = '#000';
+              ctx.fillRect((col + QUIET) * scale, (row + QUIET) * scale, scale, scale);
+            }
+          }
+        }
+
+        container.appendChild(canvas);
       } catch (e) {
+        console.error('QR error:', e);
         container.textContent = 'QR error: ' + e.message;
       }
 
@@ -131,23 +166,30 @@ window.TimerApp = window.TimerApp || {};
   var html5QrCode = null;
   var importChunks = [];
   var importTotal = -1;
+  var scanAttempts = 0;
 
   function openImport() {
+    console.log('=== Import: opening scanner ===');
+
     if (typeof Html5Qrcode === 'undefined') {
+      console.error('Import: Html5Qrcode is not defined — CDN script may have failed to load');
       alert('QR scanner not available. Please check your connection.');
       return;
     }
+    console.log('Import: Html5Qrcode found, version:', Html5Qrcode.version || 'unknown');
 
     var modal = document.getElementById('import-modal');
     modal.classList.remove('hidden');
 
     importChunks = [];
     importTotal = -1;
+    scanAttempts = 0;
     document.getElementById('import-progress').textContent = '';
     document.getElementById('import-actions').classList.add('hidden');
 
     // Clean up any previous scanner instance
     if (html5QrCode) {
+      console.log('Import: cleaning up previous scanner instance');
       html5QrCode.stop().then(function() {
         html5QrCode.clear();
       }).catch(function() {});
@@ -156,27 +198,50 @@ window.TimerApp = window.TimerApp || {};
     var readerEl = document.getElementById('qr-reader');
     readerEl.innerHTML = '';
     html5QrCode = new Html5Qrcode('qr-reader');
+    console.log('Import: scanner instance created');
 
     html5QrCode.start(
       { facingMode: 'environment' },
-      { fps: 10, qrbox: { width: 250, height: 250 } },
+      { fps: 10, qrbox: { width: 300, height: 300 }, aspectRatio: 1 },
       onScanSuccess,
-      function() {} // ignore scan errors
-    ).catch(function(err) {
+      function(errMsg) {
+        scanAttempts++;
+        // Log first 5 attempts, then every 50th
+        if (scanAttempts <= 5) {
+          console.log('Import: scan attempt #' + scanAttempts + ' — ' + errMsg);
+        } else if (scanAttempts % 50 === 0) {
+          console.log('Import: scan attempt #' + scanAttempts + ' — still trying (last err: ' + errMsg + ')');
+        }
+        // Update a visible counter so the user knows it's working
+        var prog = document.getElementById('import-progress');
+        if (prog && prog.textContent === '' && scanAttempts % 10 === 0) {
+          prog.textContent = 'Scanning... (' + scanAttempts + ' frames)';
+        }
+      }
+    ).then(function() {
+      console.log('Import: camera started successfully');
+    }).catch(function(err) {
+      console.error('Import: camera start error —', err.message || err);
       readerEl.textContent = 'Camera error: ' + err.message;
     });
   }
 
   function onScanSuccess(decodedText) {
+    console.log('Import: QR scanned, ' + decodedText.length + ' bytes');
+
     var data;
     try {
       data = JSON.parse(decodedText);
+      console.log('JSON parsed successfully. Type:', Array.isArray(data) ? 'array' : typeof data);
     } catch (e) {
-      return; // not our QR code, ignore
+      console.warn('Import: JSON parse failed — not our QR code. Error:', e.message);
+      console.warn('Raw text:', decodedText.substring(0, 200));
+      return;
     }
 
     // Single-chunk payload: plain array of routines
     if (Array.isArray(data)) {
+      console.log('Import: detected single-chunk payload, ' + data.length + ' routines');
       importChunks = [{ i: 0, n: 1, d: data }];
       importTotal = 1;
       finishImport();
@@ -185,30 +250,43 @@ window.TimerApp = window.TimerApp || {};
 
     // Multi-chunk payload
     if (data && typeof data.i === 'number' && Array.isArray(data.d)) {
-      if (importTotal === -1) importTotal = data.n;
+      console.log('Import: detected multi-chunk payload, chunk ' + data.i + '/' + data.n + ', ' + data.d.length + ' routines');
+      if (importTotal === -1) {
+        importTotal = data.n;
+        console.log('Import: expecting ' + importTotal + ' total chunks');
+      }
 
       // Avoid duplicates
       var exists = importChunks.some(function(c) { return c.i === data.i; });
-      if (!exists) {
-        importChunks.push(data);
+      if (exists) {
+        console.log('Import: chunk ' + data.i + ' already received, skipping');
+        return;
       }
+      importChunks.push(data);
 
       var prog = document.getElementById('import-progress');
       prog.textContent = exports.I18n.t('importReceived')
         .replace('{cur}', importChunks.length)
         .replace('{total}', importTotal);
+      console.log('Import: progress ' + importChunks.length + '/' + importTotal);
 
       if (importChunks.length >= importTotal) {
+        console.log('Import: all chunks received, finishing');
         finishImport();
       }
+      return;
     }
+
+    console.warn('Import: unrecognized payload format. Keys:', Object.keys(data));
   }
 
   function finishImport() {
+    console.log('=== Import: finishing ===');
     if (html5QrCode) {
       html5QrCode.stop().then(function() {
         html5QrCode.clear();
       }).catch(function() {});
+      html5QrCode = null;
     }
 
     // Assemble routines in order
@@ -218,23 +296,37 @@ window.TimerApp = window.TimerApp || {};
       allRoutines = allRoutines.concat(importChunks[i].d);
     }
 
+    console.log('Import: assembled ' + allRoutines.length + ' routines total');
+    console.log('Import: routine names —', allRoutines.map(function(r) { return r.name; }));
+
     document.getElementById('qr-reader').innerHTML = '';
     document.getElementById('import-progress').textContent =
       exports.I18n.t('importReady').replace('{count}', allRoutines.length);
     document.getElementById('import-actions').classList.remove('hidden');
 
-    document.getElementById('btn-import-merge').onclick = function() {
+    var mergeBtn = document.getElementById('btn-import-merge');
+    var cancelBtn = document.getElementById('btn-import-cancel');
+    var merged = false;
+
+    mergeBtn.onclick = function() {
+      if (merged) return;
+      merged = true;
+      mergeBtn.disabled = true;
+      console.log('Import: user clicked Import — merging ' + allRoutines.length + ' routines');
       mergeRoutines(allRoutines);
       closeImport();
     };
 
-    document.getElementById('btn-import-cancel').onclick = function() {
+    cancelBtn.onclick = function() {
+      console.log('Import: user cancelled');
       closeImport();
     };
   }
 
   function mergeRoutines(newRoutines) {
     var existing = exports.Storage.getRoutines();
+    console.log('Import: merging ' + newRoutines.length + ' new routines into ' + existing.length + ' existing');
+
     var names = {};
     for (var i = 0; i < existing.length; i++) {
       names[existing[i].name] = true;
@@ -242,9 +334,7 @@ window.TimerApp = window.TimerApp || {};
 
     for (var j = 0; j < newRoutines.length; j++) {
       var r = newRoutines[j];
-      // Strip any id to avoid collisions
       r.id = undefined;
-      // Handle duplicate names
       var base = r.name;
       var suffix = 2;
       while (names[r.name]) {
@@ -253,18 +343,26 @@ window.TimerApp = window.TimerApp || {};
       }
       names[r.name] = true;
       exports.Storage.saveRoutine(r);
+      console.log('Import: saved routine "' + r.name + '"');
     }
 
     if (exports.UI && exports.UI.renderRoutines) {
       exports.UI.renderRoutines();
     }
+    console.log('Import: merge complete, UI refreshed');
   }
 
   function closeImport() {
+    console.log('Import: closing');
     if (html5QrCode) {
-      html5QrCode.stop().then(function() {
-        html5QrCode.clear();
-      }).catch(function() {});
+      try {
+        html5QrCode.stop().then(function() {
+          html5QrCode.clear();
+        }).catch(function() {});
+      } catch (e) {
+        // Scanner already stopped by finishImport — ignore
+        console.log('Import: scanner already stopped');
+      }
       html5QrCode = null;
     }
     var modal = document.getElementById('import-modal');
@@ -284,6 +382,48 @@ window.TimerApp = window.TimerApp || {};
     var importModal = document.getElementById('import-modal');
     if (importModal) {
       importModal.querySelector('.modal-backdrop').addEventListener('click', closeImport);
+    }
+
+    // File upload import using jsQR (independent decoder)
+    var fileLabel = document.getElementById('import-file-label');
+    var fileInput = document.getElementById('import-file-input');
+    if (fileLabel && fileInput) {
+      fileLabel.addEventListener('click', function() { fileInput.click(); });
+      fileInput.addEventListener('change', function() {
+        if (!fileInput.files || !fileInput.files[0]) return;
+        var file = fileInput.files[0];
+        console.log('Import: scanning uploaded file via jsQR — ' + file.name);
+        fileInput.value = '';
+
+        if (typeof jsQR === 'undefined') {
+          console.error('Import: jsQR library not loaded');
+          alert('QR decoder library not available.');
+          return;
+        }
+
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext('2d');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          var code = jsQR(imageData.data, imageData.width, imageData.height);
+          if (code) {
+            console.log('Import: jsQR decoded, ' + code.data.length + ' bytes');
+            onScanSuccess(code.data);
+          } else {
+            console.error('Import: jsQR could not find a QR code in this image');
+            alert('No QR code found in this image. Please make sure the QR code is clearly visible.');
+          }
+        };
+        img.onerror = function() {
+          console.error('Import: failed to load image file');
+          alert('Could not load the image file.');
+        };
+        img.src = URL.createObjectURL(file);
+      });
     }
   }
 

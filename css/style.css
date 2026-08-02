@@ -320,6 +320,12 @@ body {
   flex: 1;
 }
 
+.import-file-link {
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 /* ===== Panel ===== */
 .panel {
   background: var(--surface);

@@ -1,4 +1,4 @@
-var VERSION = '1.2.2';
+var VERSION = '1.2.13';
 var CACHE = 'ez-interval-timer-v' + VERSION;
 
 var ASSETS = [
@@ -15,6 +15,9 @@ var ASSETS = [
   '/ez-interval-timer/js/timer.js',
   '/ez-interval-timer/js/ui.js',
   '/ez-interval-timer/js/export-import.js',
+  '/ez-interval-timer/js/vendor/qrcode-generator.min.js',
+  '/ez-interval-timer/js/vendor/jsQR.js',
+  '/ez-interval-timer/js/vendor/html5-qrcode.min.js',
   '/ez-interval-timer/manifest.json',
   '/ez-interval-timer/icon-192.png',
   '/ez-interval-timer/icon-512.png',
