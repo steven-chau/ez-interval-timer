@@ -22,6 +22,9 @@ window.TimerApp = window.TimerApp || {};
     // About modal — click version in menu footer to open
     setupAboutModal();
 
+    // Export/Import routines
+    exports.ExportImport.wireMenu();
+
     // Initialize audio context on first user interaction
     document.addEventListener('click', function initAudio() {
       exports.Audio.init();

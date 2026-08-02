@@ -1,4 +1,4 @@
-var VERSION = '1.1.23';
+var VERSION = '1.2.1';
 var CACHE = 'ez-interval-timer-v' + VERSION;
 
 var ASSETS = [
@@ -14,6 +14,7 @@ var ASSETS = [
   '/ez-interval-timer/js/storage.js',
   '/ez-interval-timer/js/timer.js',
   '/ez-interval-timer/js/ui.js',
+  '/ez-interval-timer/js/export-import.js',
   '/ez-interval-timer/manifest.json',
   '/ez-interval-timer/icon-192.png',
   '/ez-interval-timer/icon-512.png',

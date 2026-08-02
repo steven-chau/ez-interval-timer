@@ -82,6 +82,14 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
             <span data-i18n="fullscreenEnter">Enter Full Screen</span>
           </button>
+          <button id="btn-export-routines" class="menu-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span data-i18n="exportRoutines">Export Routines</span>
+          </button>
+          <button id="btn-import-routines" class="menu-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span data-i18n="importRoutines">Import Routines</span>
+          </button>
           <button id="btn-menu-share" class="menu-item">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
             <span data-i18n="share">Share</span>
@@ -373,6 +381,34 @@
     </div>
   </div>
 
+  <!-- ===== Export Modal ===== -->
+  <div id="export-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content about-modal-content">
+      <h2 data-i18n="exportRoutines">Export Routines</h2>
+      <div id="qr-export-container" class="qr-canvas"></div>
+      <p id="qr-export-progress" class="qr-progress"></p>
+      <p id="qr-export-instruction" class="qr-instruction" data-i18n="qrSingleInstruction">Scan this code from another device with EZ Timer open, then tap Import Routines.</p>
+      <button id="btn-close-export" class="btn btn-secondary" data-i18n="cancel">Close</button>
+    </div>
+  </div>
+
+  <!-- ===== Import Modal ===== -->
+  <div id="import-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content about-modal-content">
+      <h2 data-i18n="importRoutines">Import Routines</h2>
+      <div id="qr-reader" class="qr-reader"></div>
+      <p id="import-progress" class="qr-progress"></p>
+      <div id="import-actions" class="import-actions hidden">
+        <button id="btn-import-merge" class="btn btn-primary" data-i18n="importMerge">Import</button>
+        <button id="btn-import-cancel" class="btn btn-secondary" data-i18n="cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/state.js"></script>
   <script src="js/timer.js"></script>
@@ -381,6 +417,7 @@
   <script src="js/records.js"></script>
   <script src="js/confetti.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/export-import.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

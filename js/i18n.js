@@ -90,7 +90,15 @@ window.TimerApp = window.TimerApp || {};
       recordsBackAria: 'Back',
       selectLanguage: 'Language',
       all: 'All',
-      shuffle: 'Shuffle'
+      shuffle: 'Shuffle',
+      exportRoutines: 'Export Routines',
+      importRoutines: 'Import Routines',
+      noRoutinesToExport: 'No routines to export.',
+      qrSingleInstruction: 'Scan this code from another device with EZ Timer open, then tap Import Routines.',
+      qrMultiInstruction: 'Keep scanning — each QR contains a batch of routines.',
+      importReceived: 'Received {cur} / {total} batches',
+      importReady: '{count} routine(s) received. Import now?',
+      importMerge: 'Import'
     },
     'zh-HK': {
       appTitle: '簡易計時器',
@@ -174,7 +182,15 @@ window.TimerApp = window.TimerApp || {};
       recordsBackAria: '返回',
       selectLanguage: '語言',
       all: '全部',
-      shuffle: '隨機'
+      shuffle: '隨機',
+      exportRoutines: '匯出流程',
+      importRoutines: '匯入流程',
+      noRoutinesToExport: '未有流程可匯出。',
+      qrSingleInstruction: '喺另一部裝置開啟 EZ Timer，然後點擊「匯入流程」掃瞄呢個 QR Code。',
+      qrMultiInstruction: '請繼續掃瞄 — 每個 QR Code 包含一部分流程。',
+      importReceived: '已接收 {cur} / {total} 批',
+      importReady: '已接收 {count} 個流程，要匯入嗎？',
+      importMerge: '匯入'
     },
     'zh-TW': {
       appTitle: '簡易計時器',
@@ -258,7 +274,15 @@ window.TimerApp = window.TimerApp || {};
       recordsBackAria: '返回',
       selectLanguage: '語言',
       all: '全部',
-      shuffle: '隨機'
+      shuffle: '隨機',
+      exportRoutines: '匯出流程',
+      importRoutines: '匯入流程',
+      noRoutinesToExport: '尚無流程可匯出。',
+      qrSingleInstruction: '在另一部裝置開啟 EZ Timer，然後點擊「匯入流程」掃描此 QR Code。',
+      qrMultiInstruction: '請繼續掃描 — 每個 QR Code 包含一部分流程。',
+      importReceived: '已接收 {cur} / {total} 批',
+      importReady: '已接收 {count} 個流程，要匯入嗎？',
+      importMerge: '匯入'
     },
     'zh-CN': {
       appTitle: '简易计时器',
@@ -342,7 +366,15 @@ window.TimerApp = window.TimerApp || {};
       recordsBackAria: '返回',
       selectLanguage: '语言',
       all: '全部',
-      shuffle: '随机'
+      shuffle: '随机',
+      exportRoutines: '导出流程',
+      importRoutines: '导入流程',
+      noRoutinesToExport: '暂无流程可导出。',
+      qrSingleInstruction: '在另一部设备打开 EZ Timer，然后点击「导入流程」扫描此二维码。',
+      qrMultiInstruction: '请继续扫描 — 每个二维码包含一部分流程。',
+      importReceived: '已接收 {cur} / {total} 批',
+      importReady: '已接收 {count} 个流程，要导入吗？',
+      importMerge: '导入'
     },
     ja: {
       appTitle: 'EZ インターバルタイマー',
@@ -426,7 +458,15 @@ window.TimerApp = window.TimerApp || {};
       recordsBackAria: '戻る',
       selectLanguage: '言語',
       all: '全部',
-      shuffle: 'シャッフル'
+      shuffle: 'シャッフル',
+      exportRoutines: 'ルーティンをエクスポート',
+      importRoutines: 'ルーティンをインポート',
+      noRoutinesToExport: 'エクスポートするルーティンがありません。',
+      qrSingleInstruction: '別の端末で EZ Timer を開き、「ルーティンをインポート」をタップしてこの QR コードをスキャンしてください。',
+      qrMultiInstruction: 'スキャンを続けてください — 各 QR コードにはルーティンの一部が含まれています。',
+      importReceived: '{cur} / {total} バッチ受信',
+      importReady: '{count} 件のルーティンを受信しました。インポートしますか？',
+      importMerge: 'インポート'
     }
   };
 

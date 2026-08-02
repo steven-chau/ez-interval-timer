@@ -274,6 +274,52 @@ body {
   color: var(--text);
 }
 
+/* ===== QR Export/Import ===== */
+.qr-canvas {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.qr-canvas canvas {
+  border-radius: 8px;
+}
+
+.qr-progress {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.25rem;
+  min-height: 1.3em;
+}
+
+.qr-instruction {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.qr-reader {
+  margin: 1rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.qr-reader video {
+  border-radius: 8px;
+}
+
+.import-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.import-actions .btn {
+  flex: 1;
+}
+
 /* ===== Panel ===== */
 .panel {
   background: var(--surface);
