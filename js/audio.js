@@ -18,11 +18,14 @@ window.TimerApp = window.TimerApp || {};
 
   /**
    * Ensure audio context is resumed (needed after user gesture on some browsers).
+   * Returns a Promise so callers can wait until the context is truly running
+   * before scheduling oscillators against audioCtx.currentTime.
    */
   function ensureResumed() {
     if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume();
+      return audioCtx.resume();
     }
+    return Promise.resolve();
   }
 
   /**
@@ -30,25 +33,25 @@ window.TimerApp = window.TimerApp || {};
    */
   function beep(frequency, duration, volume) {
     if (!audioCtx) return;
-    ensureResumed();
+    ensureResumed().then(function() {
+      frequency = frequency || 880;
+      duration = duration || 0.12;
+      volume = volume || 0.15;
 
-    frequency = frequency || 880;
-    duration = duration || 0.12;
-    volume = volume || 0.15;
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
 
-    var osc = audioCtx.createOscillator();
-    var gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = frequency;
+      gain.gain.value = volume;
 
-    osc.type = 'sine';
-    osc.frequency.value = frequency;
-    gain.gain.value = volume;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
 
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-
-    var now = audioCtx.currentTime;
-    osc.start(now);
-    osc.stop(now + duration);
+      var now = audioCtx.currentTime;
+      osc.start(now);
+      osc.stop(now + duration);
+    });
   }
 
   /**
@@ -57,47 +60,47 @@ window.TimerApp = window.TimerApp || {};
    */
   function gong() {
     if (!audioCtx) return;
-    ensureResumed();
+    ensureResumed().then(function() {
+      var now = audioCtx.currentTime;
+      var duration = 3.0;
 
-    var now = audioCtx.currentTime;
-    var duration = 3.0;
+      // Two closely-spaced low tones create a slow, soothing warble (~3 Hz beat)
+      var tones = [
+        { freq: 136.0, gain: 0.18 },
+        { freq: 139.0, gain: 0.15 },
+      ];
 
-    // Two closely-spaced low tones create a slow, soothing warble (~3 Hz beat)
-    var tones = [
-      { freq: 136.0, gain: 0.18 },
-      { freq: 139.0, gain: 0.15 },
-    ];
+      for (var t = 0; t < tones.length; t++) {
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
 
-    for (var t = 0; t < tones.length; t++) {
-      var osc = audioCtx.createOscillator();
-      var gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(tones[t].freq, now);
 
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(tones[t].freq, now);
+        // Slow bloom in, then long gentle decay
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.exponentialRampToValueAtTime(tones[t].gain, now + 0.25);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
 
-      // Slow bloom in, then long gentle decay
-      gain.gain.setValueAtTime(0.001, now);
-      gain.gain.exponentialRampToValueAtTime(tones[t].gain, now + 0.25);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + duration);
+      }
 
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(now);
-      osc.stop(now + duration);
-    }
-
-    // Quiet warm overtone an octave above
-    var overtone = audioCtx.createOscillator();
-    var overtoneGain = audioCtx.createGain();
-    overtone.type = 'sine';
-    overtone.frequency.setValueAtTime(272, now);
-    overtoneGain.gain.setValueAtTime(0.001, now);
-    overtoneGain.gain.exponentialRampToValueAtTime(0.06, now + 0.3);
-    overtoneGain.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.7);
-    overtone.connect(overtoneGain);
-    overtoneGain.connect(audioCtx.destination);
-    overtone.start(now);
-    overtone.stop(now + duration);
+      // Quiet warm overtone an octave above
+      var overtone = audioCtx.createOscillator();
+      var overtoneGain = audioCtx.createGain();
+      overtone.type = 'sine';
+      overtone.frequency.setValueAtTime(272, now);
+      overtoneGain.gain.setValueAtTime(0.001, now);
+      overtoneGain.gain.exponentialRampToValueAtTime(0.06, now + 0.3);
+      overtoneGain.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.7);
+      overtone.connect(overtoneGain);
+      overtoneGain.connect(audioCtx.destination);
+      overtone.start(now);
+      overtone.stop(now + duration);
+    });
   }
 
   /**
@@ -105,22 +108,22 @@ window.TimerApp = window.TimerApp || {};
    */
   function transitionTone() {
     if (!audioCtx) return;
-    ensureResumed();
+    ensureResumed().then(function() {
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
 
-    var osc = audioCtx.createOscillator();
-    var gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 660;
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
 
-    osc.type = 'sine';
-    osc.frequency.value = 660;
-    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
 
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-
-    var now = audioCtx.currentTime;
-    osc.start(now);
-    osc.stop(now + 0.4);
+      var now = audioCtx.currentTime;
+      osc.start(now);
+      osc.stop(now + 0.4);
+    });
   }
 
   /**
@@ -128,19 +131,19 @@ window.TimerApp = window.TimerApp || {};
    */
   function completionChime() {
     if (!audioCtx) return;
-    ensureResumed();
-
-    [523, 784].forEach(function(freq, i) {
-      var osc = audioCtx.createOscillator();
-      var gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0.2, audioCtx.currentTime + i * 0.15);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.15 + 0.5);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(audioCtx.currentTime + i * 0.15);
-      osc.stop(audioCtx.currentTime + i * 0.15 + 0.5);
+    ensureResumed().then(function() {
+      [523, 784].forEach(function(freq, i) {
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime + i * 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.15 + 0.5);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + i * 0.15);
+        osc.stop(audioCtx.currentTime + i * 0.15 + 0.5);
+      });
     });
   }
 
@@ -173,6 +176,11 @@ window.TimerApp = window.TimerApp || {};
       }
     }
     window.speechSynthesis.speak(utterance);
+
+    // Proactively resume audio context — speech synthesis may have suspended it
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
   }
 
   // Preload voices — some browsers load them asynchronously
