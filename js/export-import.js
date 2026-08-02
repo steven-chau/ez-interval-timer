@@ -215,7 +215,7 @@ window.TimerApp = window.TimerApp || {};
         // Update a visible counter so the user knows it's working
         var prog = document.getElementById('import-progress');
         if (prog && prog.textContent === '' && scanAttempts % 10 === 0) {
-          prog.textContent = 'Scanning... (' + scanAttempts + ' frames)';
+          prog.textContent = exports.I18n.t('importScanning', { n: scanAttempts });
         }
       }
     ).then(function() {

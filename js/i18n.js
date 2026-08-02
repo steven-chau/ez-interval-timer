@@ -98,7 +98,11 @@ window.TimerApp = window.TimerApp || {};
       qrMultiInstruction: 'Keep scanning — each QR contains a batch of routines.',
       importReceived: 'Received {cur} / {total} batches',
       importReady: '{count} routine(s) received. Import now?',
-      importMerge: 'Import'
+      importMerge: 'Import',
+      importUploadPrefix: 'Or ',
+      importUploadLink: 'upload a screenshot',
+      importUploadSuffix: ' of the QR code.',
+      importScanning: 'Scanning... ({n} frames)'
     },
     'zh-HK': {
       appTitle: '簡易計時器',
@@ -190,7 +194,11 @@ window.TimerApp = window.TimerApp || {};
       qrMultiInstruction: '請繼續掃瞄 — 每個 QR Code 包含一部分流程。',
       importReceived: '已接收 {cur} / {total} 批',
       importReady: '已接收 {count} 個流程，要匯入嗎？',
-      importMerge: '匯入'
+      importMerge: '匯入',
+      importUploadPrefix: '或者',
+      importUploadLink: '上傳螢幕截圖',
+      importUploadSuffix: '掃描 QR Code。',
+      importScanning: '掃描中...（{n} 幀）'
     },
     'zh-TW': {
       appTitle: '簡易計時器',
@@ -374,7 +382,11 @@ window.TimerApp = window.TimerApp || {};
       qrMultiInstruction: '请继续扫描 — 每个二维码包含一部分流程。',
       importReceived: '已接收 {cur} / {total} 批',
       importReady: '已接收 {count} 个流程，要导入吗？',
-      importMerge: '导入'
+      importMerge: '导入',
+      importUploadPrefix: '或者',
+      importUploadLink: '上传屏幕截图',
+      importUploadSuffix: '扫描二维码。',
+      importScanning: '扫描中...（{n} 帧）'
     },
     ja: {
       appTitle: 'EZ インターバルタイマー',
@@ -466,7 +478,11 @@ window.TimerApp = window.TimerApp || {};
       qrMultiInstruction: 'スキャンを続けてください — 各 QR コードにはルーティンの一部が含まれています。',
       importReceived: '{cur} / {total} バッチ受信',
       importReady: '{count} 件のルーティンを受信しました。インポートしますか？',
-      importMerge: 'インポート'
+      importMerge: 'インポート',
+      importUploadPrefix: '',
+      importUploadLink: 'スクリーンショットをアップロード',
+      importUploadSuffix: 'してQRコードを読み取ってください。',
+      importScanning: 'スキャン中...（{n} フレーム）'
     }
   };
 

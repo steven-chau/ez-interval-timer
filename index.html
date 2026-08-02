@@ -404,7 +404,11 @@
         <button id="btn-import-merge" class="btn btn-primary" data-i18n="importMerge">Import</button>
         <button id="btn-import-cancel" class="btn btn-secondary" data-i18n="cancel">Cancel</button>
       </div>
-      <p class="qr-instruction" style="margin-top:0.75rem;">Or <label id="import-file-label" class="import-file-link">upload a screenshot</label> of the QR code.</p>
+      <p class="qr-instruction" style="margin-top:0.75rem;">
+        <span data-i18n="importUploadPrefix">Or </span>
+        <label id="import-file-label" class="import-file-link" data-i18n="importUploadLink">upload a screenshot</label>
+        <span data-i18n="importUploadSuffix"> of the QR code.</span>
+      </p>
       <input type="file" id="import-file-input" accept="image/*" style="display:none;">
     </div>
   </div>
