@@ -1,11 +1,11 @@
 <div align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-dark.ja.png">
-    <img alt="EZ インターバルタイマー — ワーク/レスト間隔付きの無料オンライントレーニングタイマー" src="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-light.ja.png">
+    <img alt="EZ タイマー — ワーク/レスト間隔付きの無料オンライントレーニングタイマー" src="https://raw.githubusercontent.com/steven-chau/ez-interval-timer/main/screenshots/timer-light.ja.png">
   </picture>
 </div>
 
-# EZ インターバルタイマー — 無料オンライントレーニング & HIIT タイマー
+# EZ タイマー — 無料オンライントレーニング & HIIT タイマー
 
 **ワークアウト、HIIT、タバタ、サーキットトレーニング、ストレッチ、ヨガ、あらゆる時間制ルーティンのための無料・インストール不要のインターバルタイマーです。** ブラウザで動作します。サインアップ不要、広告なし、アプリストア不要。ワークアウト履歴トラッキング、カレンダーヒートマップ、5言語対応。
 
@@ -15,9 +15,9 @@
 
 ---
 
-## EZ インターバルタイマーを選ぶ理由
+## EZ タイマーを選ぶ理由
 
-多くのワークアウトタイマーアプリは広告だらけで、サインアップが必要だったり、サブスクリプションで機能が制限されていたりします。EZ インターバルタイマーは違います：
+多くのワークアウトタイマーアプリは広告だらけで、サインアップが必要だったり、サブスクリプションで機能が制限されていたりします。EZ タイマーは違います：
 
 - **完全無料。** 広告なし、アカウントなし、ペイウォールなし。ただ使えるタイマー。
 - **ブラウザで動作。** スマートフォン、タブレット、デスクトップ対応。インストール不要。
@@ -124,6 +124,6 @@ MIT
 
 ---
 
-**[EZ インターバルタイマーを開く →](https://steven-chau.github.io/interval-timer)**
+**[EZ タイマーを開く →](https://steven-chau.github.io/interval-timer)**
 
 *広告なし。サインアップ不要。スタートを押すだけ。*

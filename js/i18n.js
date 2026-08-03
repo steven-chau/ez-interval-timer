@@ -389,7 +389,7 @@ window.TimerApp = window.TimerApp || {};
       importScanning: '扫描中...（{n} 帧）'
     },
     ja: {
-      appTitle: 'EZ インターバルタイマー',
+      appTitle: 'EZ タイマー',
       quickstart: 'クイックスタート',
       yourRoutines: 'ルーティン',
       sets: 'セット数',
