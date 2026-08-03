@@ -70,18 +70,18 @@ window.TimerApp = window.TimerApp || {};
       // Frequency sweep — quick, clean rise with no extra turns
       osc.type = 'sine';
       osc.frequency.setValueAtTime(2000, now);
-      osc.frequency.exponentialRampToValueAtTime(2800, now + 0.06);
+      osc.frequency.exponentialRampToValueAtTime(2800, now + 0.045);
 
       // Linear envelope — quick attack, sustain, clean release
       gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.4, now + 0.025);
-      gain.gain.setValueAtTime(0.4, now + 0.17);
-      gain.gain.linearRampToValueAtTime(0, now + 0.22);
+      gain.gain.linearRampToValueAtTime(2.0, now + 0.018);
+      gain.gain.setValueAtTime(2.0, now + 0.12);
+      gain.gain.linearRampToValueAtTime(0, now + 0.16);
 
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start(now);
-      osc.stop(now + 0.22);
+      osc.stop(now + 0.16);
     });
   }
 
