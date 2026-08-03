@@ -74,8 +74,8 @@ window.TimerApp = window.TimerApp || {};
 
       // Linear envelope — quick attack, sustain, clean release
       gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(2.0, now + 0.018);
-      gain.gain.setValueAtTime(2.0, now + 0.12);
+      gain.gain.linearRampToValueAtTime(0.2, now + 0.018);
+      gain.gain.setValueAtTime(0.2, now + 0.12);
       gain.gain.linearRampToValueAtTime(0, now + 0.16);
 
       osc.connect(gain);

@@ -1,4 +1,4 @@
-var VERSION = '1.2.25';
+var VERSION = '1.2.27';
 var CACHE = 'ez-interval-timer-v' + VERSION;
 
 var ASSETS = [
@@ -26,7 +26,6 @@ var ASSETS = [
 ];
 
 self.addEventListener('install', function(e) {
-  self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE).then(function(cache) {
       return Promise.all(
