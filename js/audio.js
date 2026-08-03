@@ -55,51 +55,33 @@ window.TimerApp = window.TimerApp || {};
   }
 
   /**
-   * Play a soothing meditation singing-bowl tone.
-   * Two close frequencies create a slow, warm beat; long bloom and decay.
+   * Play a sharp police-whistle tone for countdown alerts.
+   * A rapid frequency sweep (rise / dip / peak) mimics the natural "wow"
+   * of a traffic whistle, with linear envelope for clean punch.
    */
-  function gong() {
+  function whistle() {
     if (!audioCtx) return;
     ensureResumed().then(function() {
       var now = audioCtx.currentTime;
-      var duration = 3.0;
 
-      // Two closely-spaced low tones create a slow, soothing warble (~3 Hz beat)
-      var tones = [
-        { freq: 136.0, gain: 0.18 },
-        { freq: 139.0, gain: 0.15 },
-      ];
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
 
-      for (var t = 0; t < tones.length; t++) {
-        var osc = audioCtx.createOscillator();
-        var gain = audioCtx.createGain();
+      // Frequency sweep — quick, clean rise with no extra turns
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(2000, now);
+      osc.frequency.exponentialRampToValueAtTime(2800, now + 0.06);
 
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(tones[t].freq, now);
+      // Linear envelope — quick attack, sustain, clean release
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.4, now + 0.025);
+      gain.gain.setValueAtTime(0.4, now + 0.17);
+      gain.gain.linearRampToValueAtTime(0, now + 0.22);
 
-        // Slow bloom in, then long gentle decay
-        gain.gain.setValueAtTime(0.001, now);
-        gain.gain.exponentialRampToValueAtTime(tones[t].gain, now + 0.25);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(now);
-        osc.stop(now + duration);
-      }
-
-      // Quiet warm overtone an octave above
-      var overtone = audioCtx.createOscillator();
-      var overtoneGain = audioCtx.createGain();
-      overtone.type = 'sine';
-      overtone.frequency.setValueAtTime(272, now);
-      overtoneGain.gain.setValueAtTime(0.001, now);
-      overtoneGain.gain.exponentialRampToValueAtTime(0.06, now + 0.3);
-      overtoneGain.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.7);
-      overtone.connect(overtoneGain);
-      overtoneGain.connect(audioCtx.destination);
-      overtone.start(now);
-      overtone.stop(now + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.22);
     });
   }
 
@@ -229,7 +211,7 @@ window.TimerApp = window.TimerApp || {};
       if (st && st.phaseSecondsRemaining <= 3 && st.phaseSecondsRemaining > 0
           && st.phase !== 'idle' && st.phase !== 'finished' && !st.isPaused) {
         if (st.phase === 'work') {
-          gong();
+          whistle();
         } else {
           beep(880, 0.1, 0.12);
         }
@@ -240,7 +222,7 @@ window.TimerApp = window.TimerApp || {};
   exports.Audio = {
     init: init,
     beep: beep,
-    gong: gong,
+    whistle: whistle,
     transitionTone: transitionTone,
     completionChime: completionChime,
     speak: speak,
