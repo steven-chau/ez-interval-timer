@@ -56,32 +56,38 @@ window.TimerApp = window.TimerApp || {};
 
   /**
    * Play a sharp police-whistle tone for countdown alerts.
-   * A rapid frequency sweep (rise / dip / peak) mimics the natural "wow"
-   * of a traffic whistle, with linear envelope for clean punch.
+   * Two slightly detuned sine waves (2740 + 2800 Hz) create a fixed
+   * ~60 Hz beat that gives the tone natural thickness without any
+   * moving modulation — fast attack, flat sustain, quick release.
    */
   function whistle() {
     if (!audioCtx) return;
     ensureResumed().then(function() {
       var now = audioCtx.currentTime;
+      var duration = 0.32;
 
-      var osc = audioCtx.createOscillator();
-      var gain = audioCtx.createGain();
+      // Two detuned oscillators for a fixed, subtle beat (~60 Hz apart)
+      var freqs = [2740, 2800];
 
-      // Frequency sweep — quick, clean rise with no extra turns
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(2000, now);
-      osc.frequency.exponentialRampToValueAtTime(2800, now + 0.045);
+      for (var i = 0; i < freqs.length; i++) {
+        var osc = audioCtx.createOscillator();
+        var envelope = audioCtx.createGain();
 
-      // Linear envelope — quick attack, sustain, clean release
-      gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.2, now + 0.018);
-      gain.gain.setValueAtTime(0.2, now + 0.12);
-      gain.gain.linearRampToValueAtTime(0, now + 0.16);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freqs[i], now);
 
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(now);
-      osc.stop(now + 0.16);
+        // Amplitude envelope
+        envelope.gain.setValueAtTime(0, now);
+        envelope.gain.linearRampToValueAtTime(0.2, now + 0.02);
+        envelope.gain.setValueAtTime(0.2, now + 0.29);
+        envelope.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        osc.connect(envelope);
+        envelope.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + duration);
+      }
     });
   }
 
