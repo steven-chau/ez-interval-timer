@@ -67,7 +67,7 @@ window.TimerApp = window.TimerApp || {};
       var duration = 0.32;
 
       // Two detuned oscillators for a fixed, subtle beat (~60 Hz apart)
-      var freqs = [2740, 2800];
+      var freqs = [2140, 2200];
 
       for (var i = 0; i < freqs.length; i++) {
         var osc = audioCtx.createOscillator();
@@ -78,8 +78,8 @@ window.TimerApp = window.TimerApp || {};
 
         // Amplitude envelope
         envelope.gain.setValueAtTime(0, now);
-        envelope.gain.linearRampToValueAtTime(0.2, now + 0.02);
-        envelope.gain.setValueAtTime(0.2, now + 0.29);
+        envelope.gain.linearRampToValueAtTime(0.16, now + 0.02);
+        envelope.gain.setValueAtTime(0.16, now + 0.29);
         envelope.gain.exponentialRampToValueAtTime(0.001, now + duration);
 
         osc.connect(envelope);
