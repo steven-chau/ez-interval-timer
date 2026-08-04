@@ -67,7 +67,7 @@ window.TimerApp = window.TimerApp || {};
       var duration = 0.32;
 
       // Two detuned oscillators for a fixed, subtle beat (~60 Hz apart)
-      var freqs = [2140, 2200];
+      var freqs = [1940, 2000];
 
       for (var i = 0; i < freqs.length; i++) {
         var osc = audioCtx.createOscillator();
